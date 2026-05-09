@@ -1,0 +1,77 @@
+{
+  "defaults": {
+    "all-tasks": {
+      "description": "每次任务必载 — 宪法",
+      "skills": ["CANON.md"]
+    }
+  },
+  "taskTypes": {
+    "brief": {
+      "description": "视频任务定义、brief",
+      "detect": {
+        "anyKeywords": ["brief", "视频任务", "任务定义", "做视频", "视频brief", "video brief"]
+      },
+      "skills": ["define-brief"]
+    },
+    "title-cover": {
+      "description": "标题封面设计、点击理由、视频承诺",
+      "detect": {
+        "anyKeywords": ["标题", "封面", "title", "cover", "点击理由", "视频承诺", "thumbnail"]
+      },
+      "skills": ["design-title-cover"]
+    },
+    "script-beats": {
+      "description": "叙事节奏、脚本节奏点、旁白",
+      "detect": {
+        "anyKeywords": ["脚本", "script", "节奏", "beats", "叙事", "旁白", "narration", "hook"]
+      },
+      "skills": ["design-script-beats"]
+    },
+    "storyboard": {
+      "description": "分镜、场景设计、时间轴",
+      "detect": {
+        "anyKeywords": ["分镜", "storyboard", "场景", "scene", "时间轴", "转场", "动效意图"]
+      },
+      "skills": ["design-storyboard"]
+    },
+    "styleframes": {
+      "description": "静态关键帧、构图、视觉设计",
+      "detect": {
+        "anyKeywords": ["styleframe", "关键帧", "静态画面", "构图", "视觉设计", "色彩", "排版"]
+      },
+      "skills": ["design-styleframes"]
+    },
+    "web-motion": {
+      "description": "Web 动画工程、GSAP、HyperFrames",
+      "detect": {
+        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames"]
+      },
+      "skills": ["build-web-motion"]
+    },
+    "render-qa": {
+      "description": "渲染、质检、导出、QA",
+      "detect": {
+        "anyKeywords": ["render", "渲染", "质检", "QA", "导出", "export", "交付", "video export"]
+      },
+      "skills": ["verify-render-qa"]
+    }
+  },
+  "checkpoints": {
+    "before-title-cover": {
+      "description": "进入标题封面设计前 — 加载 title-cover-scout",
+      "skills": ["design-title-cover"]
+    },
+    "before-storyboard": {
+      "description": "进入分镜设计前 — 加载 storyboard-reviewer",
+      "skills": ["design-storyboard"]
+    },
+    "before-compose": {
+      "description": "进入动画工程前 — 加载 motion-engineer",
+      "skills": ["build-web-motion"]
+    },
+    "before-render-qa": {
+      "description": "进入渲染质检前 — 加载 render-qa-auditor",
+      "skills": ["verify-render-qa"]
+    }
+  }
+}
