@@ -1,0 +1,16 @@
+{
+  "name": "motioncraft-skills",
+  "description": "v1.0.0 — Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色。Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Composition → Render QA",
+  "owner": {
+    "name": "gm-video"
+  },
+  "homepage": "https://github.com/ZeroZ-lab/motioncraft-skills",
+  "plugins": [
+    {
+      "name": "motioncraft",
+      "description": "v1.0.0 — Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色。Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Composition → Render QA",
+      "homepage": "https://github.com/ZeroZ-lab/motioncraft-skills",
+      "source": "./"
+    }
+  ]
+}
