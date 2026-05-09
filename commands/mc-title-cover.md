@@ -2,7 +2,7 @@
 description: 定义标题封面 — 点击理由与视频承诺
 ---
 
-# Command: /title-cover
+# Command: /mc-title-cover
 
 ## Goal
 
@@ -35,7 +35,7 @@ Define the video's click reason, promise, and cover concept.
 - [ ] 用户已确认标题和封面
 
 ## Next Steps
-- If approved → /script
+- If approved → /mc-script
 
 ## 实现
 

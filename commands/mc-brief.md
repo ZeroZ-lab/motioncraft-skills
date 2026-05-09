@@ -2,7 +2,7 @@
 description: 视频任务定义 — 把模糊创意变成可执行视频任务
 ---
 
-# Command: /brief
+# Command: /mc-brief
 
 ## Goal
 
@@ -34,7 +34,7 @@ Transform a vague video idea into a structured, validated brief.
 - [ ] 用户已批准
 
 ## Next Steps
-- If approved → /title-cover
+- If approved → /mc-title-cover
 
 ## 实现
 

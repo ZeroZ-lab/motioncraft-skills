@@ -61,13 +61,13 @@ verify/    → render-qa（渲染质检）
 
 | 命令 | 加载的技能 | 产出 | 人工确认 |
 |------|-----------|------|---------|
-| `/brief` | define-brief | 视频任务 brief | `docs/video/<name>/01-brief.md` |
-| `/title-cover` | design-title-cover | 标题封面 | `docs/video/<name>/02-title-cover.md` | ✅ Checkpoint 1 |
-| `/script` | design-script-beats | 叙事节奏 | `docs/video/<name>/03-script-beats.md` |
-| `/storyboard` | design-storyboard | 分镜场景 | `docs/video/<name>/04-storyboard.md` | ✅ Checkpoint 2 |
-| `/styleframes` | design-styleframes | 静态关键帧 | `docs/video/<name>/05-styleframes.md` |
-| `/compose` | build-web-motion | Web 动画工程 | `project/` |
-| `/render-qa` | verify-render-qa | QA 报告 + 导出 | `docs/video/<name>/06-qa-report.md` | ✅ Checkpoint 3 |
+| `/mc-brief` | define-brief | 视频任务 brief | `docs/video/<name>/01-brief.md` |
+| `/mc-title-cover` | design-title-cover | 标题封面 | `docs/video/<name>/02-title-cover.md` | ✅ Checkpoint 1 |
+| `/mc-script` | design-script-beats | 叙事节奏 | `docs/video/<name>/03-script-beats.md` |
+| `/mc-storyboard` | design-storyboard | 分镜场景 | `docs/video/<name>/04-storyboard.md` | ✅ Checkpoint 2 |
+| `/mc-styleframes` | design-styleframes | 静态关键帧 | `docs/video/<name>/05-styleframes.md` |
+| `/mc-compose` | build-web-motion | Web 动画工程 | `project/` |
+| `/mc-render-qa` | verify-render-qa | QA 报告 + 导出 | `docs/video/<name>/06-qa-report.md` | ✅ Checkpoint 3 |
 
 ## 3 个人工确认 Checkpoint
 
@@ -83,12 +83,12 @@ Agent 可以自动执行中间步骤，但这 3 个节点必须保留人工判�
 
 ```
 docs/video/<name>/
-├── 01-brief.md           ← /brief
-├── 02-title-cover.md     ← /title-cover
-├── 03-script-beats.md    ← /script
-├── 04-storyboard.md      ← /storyboard
-├── 05-styleframes.md     ← /styleframes
-└── 06-qa-report.md       ← /render-qa
+├── 01-brief.md           ← /mc-brief
+├── 02-title-cover.md     ← /mc-title-cover
+├── 03-script-beats.md    ← /mc-script
+├── 04-storyboard.md      ← /mc-storyboard
+├── 05-styleframes.md     ← /mc-styleframes
+└── 06-qa-report.md       ← /mc-render-qa
 
 project/
 ├── index.html

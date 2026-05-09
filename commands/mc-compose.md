@@ -2,7 +2,7 @@
 description: Web 动画工程生成 — 把分镜变成可渲染工程
 ---
 
-# Command: /compose
+# Command: /mc-compose
 
 ## Goal
 
@@ -40,7 +40,7 @@ Transform storyboard + styleframes into a renderable web motion project.
 - [ ] 完整 timeline preview 通过
 
 ## Next Steps
-- If complete → /render-qa
+- If complete → /mc-render-qa
 
 ## 实现
 

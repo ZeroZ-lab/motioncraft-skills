@@ -16,13 +16,13 @@ Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Mo
 
 | 步骤 | 命令 | 产出 | 人工确认 |
 |------|------|------|---------|
-| 1. Brief | `/brief` | 视频任务定义 | |
-| 2. Title/Cover | `/title-cover` | 点击理由与承诺 | ✅ Checkpoint 1 |
-| 3. Script Beats | `/script` | 叙事节奏点 | |
-| 4. Storyboard | `/storyboard` | 可执行场景 | ✅ Checkpoint 2 |
-| 5. Styleframes | `/styleframes` | 静态关键帧 | |
-| 6. Composition | `/compose` | Web 动画工程 | |
-| 7. Render QA | `/render-qa` | QA 报告 + 导出 | ✅ Checkpoint 3 |
+| 1. Brief | `/mc-brief` | 视频任务定义 | |
+| 2. Title/Cover | `/mc-title-cover` | 点击理由与承诺 | ✅ Checkpoint 1 |
+| 3. Script Beats | `/mc-script` | 叙事节奏点 | |
+| 4. Storyboard | `/mc-storyboard` | 可执行场景 | ✅ Checkpoint 2 |
+| 5. Styleframes | `/mc-styleframes` | 静态关键帧 | |
+| 6. Composition | `/mc-compose` | Web 动画工程 | |
+| 7. Render QA | `/mc-render-qa` | QA 报告 + 导出 | ✅ Checkpoint 3 |
 
 ## 快速开始
 
@@ -41,18 +41,18 @@ Plugins → Add Marketplace → ZeroZ-lab/motioncraft-skills
 从一条模糊的想法开始：
 
 ```
-/brief
+/mc-brief
 ```
 
 回答几个问题后，系统会生成结构化的 brief。然后按顺序走完 pipeline：
 
 ```
-/title-cover    → 确认标题和封面
-/script         → 拆解叙事节奏
-/storyboard     → 设计每一幕场景，确认分镜
-/styleframes    → 设计静态画面
-/compose        → 生成 GSAP + HTML 动画工程
-/render-qa      → 渲染、质检、导出
+/mc-title-cover    → 确认标题和封面
+/mc-script         → 拆解叙事节奏
+/mc-storyboard     → 设计每一幕场景，确认分镜
+/mc-styleframes    → 设计静态画面
+/mc-compose        → 生成 GSAP + HTML 动画工程
+/mc-render-qa      → 渲染、质检、导出
 ```
 
 3 个 Checkpoint 需要你确认后才继续。
