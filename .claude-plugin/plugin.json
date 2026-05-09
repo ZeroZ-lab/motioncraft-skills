@@ -3,10 +3,10 @@
   "description": "v1.0.0 — Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色。Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Composition → Render QA",
   "author": {
     "name": "gm-video",
-    "url": "https://github.com/gm-video/motioncraft-skills"
+    "url": "https://github.com/ZeroZ-lab/motioncraft-skills"
   },
   "version": "1.0.0",
-  "homepage": "https://github.com/gm-video/motioncraft-skills",
+  "homepage": "https://github.com/ZeroZ-lab/motioncraft-skills",
   "compatibility": {
     "claude-code": ">=1.0.0"
   }
