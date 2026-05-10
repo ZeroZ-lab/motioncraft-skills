@@ -35,9 +35,15 @@ description: 设计静态关键帧。使用 cuando storyboard 已批准需要设
 visual_system:
   typography:
     primary_font:
+    primary_font_fallback:   # 至少 1 个 fallback + 通用族名
     secondary_font:
+    secondary_font_fallback: # 至少 1 个 fallback + 通用族名
     heading_size:
     body_size:
+  font_loading:
+    method: "cdn"            # "cdn" 或 "local"
+    cdn_link:                # Google Fonts URL（如使用 CDN）
+    local_path:              # assets/fonts/（如使用本地字体）
   color:
     primary:
     secondary:
@@ -54,6 +60,33 @@ visual_system:
     enter_type:
     exit_type:
 ```
+
+### Step 1.5：字体可用性检查
+
+在确定视觉系统的字体后，验证字体可用性：
+
+**检查清单：**
+- [ ] 主字体有 fallback 字体（如 `'JetBrains Mono', 'Fira Code', monospace`）
+- [ ] 次要字体有 fallback 字体（如 `'Inter', 'SF Pro', sans-serif`）
+- [ ] Google Fonts CDN 链接正确（`<link href="https://fonts.googleapis.com/css2?family=...">`）
+- [ ] 无效字体名不出现（拼写错误、不存在的字体）
+
+**字体加载验证（浏览器控制台）：**
+
+```javascript
+document.fonts.ready.then(() => {
+  const fonts = ['JetBrains Mono', 'Inter']; // 替换为实际使用的字体
+  fonts.forEach(font => {
+    const loaded = document.fonts.check('16px "' + font + '"');
+    console.log(`${font}: ${loaded ? '已加载' : '未加载'}`);
+  });
+});
+```
+
+**生产环境建议：**
+- 需要渲染导出的项目，建议将字体文件下载到 `assets/fonts/` 目录
+- 使用 `@font-face` 本地引用替代 CDN
+- 确保所有 fallback 字体在同一条 `font-family` 声明中
 
 ### Step 2：逐幕设计
 

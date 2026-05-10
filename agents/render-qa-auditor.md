@@ -50,12 +50,20 @@
 - [ ] 时长匹配 brief
 - [ ] 所有 scene 已实现
 
+### HyperFrames 专项检查
+- [ ] HTML 根容器有 `data-composition-id` 属性
+- [ ] `data-composition-id` 与 `window.__timelines` key 一致
+- [ ] GSAP timeline 使用 `{ paused: true }` 创建
+- [ ] `window.__timelines` 已正确注册
+- [ ] Timeline 实际时长与 storyboard 目标时长偏差 <5%
+
 ### 建议（Important）
 - [ ] 文字安全区
 - [ ] 动画 easing 自然
 - [ ] 转场流畅
 - [ ] 颜色一致性
 - [ ] 字体加载正确
+- [ ] 字体有 fallback 方案（本地字体或系统字体 fallback）
 
 ### 可选（Suggestion）
 - [ ] 文件大小优化

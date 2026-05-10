@@ -43,6 +43,27 @@
 - 使用 `will-change` 提示浏览器
 - SVG 复杂度 ≤ 1000 路径节点
 
+## HyperFrames 集成指导
+
+所有 MotionCraft 工程必须遵循 HyperFrames 集成规范：
+
+### 必须指导
+- GSAP timeline 必须使用 `{ paused: true }` — HyperFrames 控制播放
+- Timeline 必须注册到 `window.__timelines[<composition-id>]`
+- HTML 根元素必须有 `data-composition-id`、`data-start="0"`、`data-width`、`data-height`
+- 不使用 `window.__hf` — HyperFrames 通过 `__timelines` 自动发现
+
+### 工程结构建议
+- `motion.js` 放在 `<script>` 标签最后加载（在 GSAP 之后）
+- 如果 timeline 代码超过 300 行，考虑拆分为 `scenes/` 目录并在 `motion.js` 中组装
+- 注册代码（`window.__timelines[...] = tl`）直接写在 `motion.js` 文件末尾，不要通过 `import` 或动态加载
+
+### Lint 注意事项
+- HyperFrames 静态 lint 会扫描 JS 文件查找 `__timelines` 注册
+- 如果注册在外部 JS 文件中，lint 可能报警告 `missing_timeline_registry`
+- 这是已知问题，不影响运行时功能
+- 缓解方式：确保注册代码直接写在 `motion.js` 文件末尾
+
 ## 输出结构
 
 ```markdown
@@ -61,4 +82,10 @@
 ### 采纳建议
 - [建议采纳哪些]
 - [建议不采纳哪些及理由]
+
+### Duration Estimate
+- target_duration: Xs (from storyboard)
+- estimated_actual: Xs (sum of all scene animations)
+- deviation: X%
+- status: PASS / WARNING / BLOCKING
 ```

@@ -191,3 +191,37 @@ tl.to('.scene-content', { opacity: 0, scale: 0.95, duration: 0.5 })
 - 标题出现: 0.6-1.0s
 - CTA 出现: 0.4-0.6s + back.out
 - 适用：结尾总结、CTA、品牌展示
+
+## Pattern 11: HyperFrames Timeline Registration
+
+**用途：** 所有 Web 动画工程的 timeline 注册，使 HyperFrames 能发现和控制播放
+
+```javascript
+// 1. 创建 paused timeline（HyperFrames 控制播放）
+const tl = gsap.timeline({ paused: true });
+
+// ... 所有 scene 动画代码 ...
+
+// 2. 注册到 window.__timelines
+window.__timelines = window.__timelines || {};
+window.__timelines['<composition-id>'] = tl;
+```
+
+**参数/规则：**
+- `{ paused: true }` 必填 — 省略后 HyperFrames 无法控制播放
+- `window.__timelines` 是 HyperFrames 发现机制 — 不使用 `window.__hf` 或其他变量名
+- `<composition-id>` 必须与 HTML `data-composition-id` 一致
+- 注册代码放在 `motion.js` 文件末尾
+- 每个工程只注册一个 timeline
+
+**HTML 配合：**
+```html
+<div data-composition-id="<composition-id>"
+     data-start="0"
+     data-width="1920"
+     data-height="1080">
+  <!-- scenes -->
+</div>
+```
+
+- 适用：所有需要渲染导出的 Web 动画工程

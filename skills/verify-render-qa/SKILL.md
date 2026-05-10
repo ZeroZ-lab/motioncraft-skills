@@ -39,18 +39,57 @@ Blocking issues 必须修复才能交付。
 所有 scene 是否按序出现？
 ```
 
-### Phase B：Render 检查
+### Phase A.5：HyperFrames Render 配置检查
 
-执行渲染并检查：
+在执行渲染之前，确认 HyperFrames 集成正确：
 
-```text
-能否正常 render？
-render 时间是否合理？
-输出文件格式是否正确？
-输出分辨率是否匹配？
-输出帧率是否匹配？
-文件大小是否合理？
+**检查清单：**
+- [ ] HTML 根容器有 `data-composition-id`
+- [ ] `data-composition-id` 与 `motion.js` 中的 `__timelines` key 一致
+- [ ] GSAP timeline 使用 `{ paused: true }` 创建
+- [ ] `window.__timelines` 已注册
+
+**预检查验证（浏览器控制台）：**
+
+```javascript
+const compositionId = document.querySelector('[data-composition-id]')?.dataset.compositionId;
+const hasTimeline = !!window.__timelines?.[compositionId];
+console.log(`Composition: ${compositionId}, Timeline registered: ${hasTimeline}`);
+if (hasTimeline) {
+  console.log(`Duration: ${window.__timelines[compositionId].duration().toFixed(2)}s`);
+}
 ```
+
+如果任何检查失败，回到 `build-web-motion` 修复 HyperFrames 集成。
+
+### Phase B：执行 Render
+
+**渲染前提：** Phase A preview 正常 + Phase A.5 HyperFrames 配置正确。
+
+**渲染步骤：**
+
+1. 确认 `project/` 目录包含完整的 HyperFrames 兼容工程
+2. 确认 `index.html` 可在浏览器中正常加载并播放完整 timeline
+3. 使用 HyperFrames 执行渲染：`npx hyperframes render <project-dir> -o <output.mp4>`
+4. 检查渲染输出文件
+
+**渲染检查清单：**
+- [ ] 正常 render（无报错完成）
+- [ ] render 时间合理（60s 视频 < 5 分钟）
+- [ ] 输出文件格式正确（.mp4）
+- [ ] 输出分辨率匹配 brief（如 1920x1080）
+- [ ] 输出帧率匹配 brief（如 30fps）
+- [ ] 文件大小合理（60s 1080p 通常 10-50MB）
+
+**渲染失败处理：**
+
+| 失败现象 | 可能原因 | 处理方式 |
+|---------|---------|---------|
+| 超时 | 动画过于复杂 | 简化动画，减少同时运动元素 |
+| 黑屏 | `__timelines` 未注册 | 检查 motion.js 末尾注册代码 |
+| 半截停止 | Timeline paused 状态异常 | 确认 `{ paused: true }` 设置 |
+| 字体缺失 | Google Fonts CDN 不可达 | 嵌入本地字体文件 |
+| 分辨率不对 | data-width/data-height 错误 | 修正 HTML 属性值 |
 
 ### Phase C：逐项质检
 

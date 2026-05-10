@@ -37,6 +37,55 @@ GSAP                — 时间轴动画
 PixiJS / Three.js   — 仅在需要特效时调用
 ```
 
+## HyperFrames 集成规范
+
+所有 Web 动画工程必须包含以下 HyperFrames 集成，否则无法渲染。
+
+### HTML 要求
+
+根容器（包含所有 scene 的最外层 `<div>`）必须设置以下属性：
+
+```html
+<div class="video-container"
+     data-composition-id="<project-name>"
+     data-start="0"
+     data-width="1920"
+     data-height="1080">
+  <!-- scenes here -->
+</div>
+```
+
+- `data-composition-id`: 项目唯一标识符，使用 kebab-case（如 `motioncraft-intro`）
+- `data-start`: 固定为 `"0"`
+- `data-width` / `data-height`: 与 brief 中 resolution 一致
+
+### GSAP Timeline 要求
+
+```javascript
+// 1. Timeline 必须使用 { paused: true } 创建
+//    HyperFrames 控制播放，timeline 不自动运行
+const tl = gsap.timeline({ paused: true });
+
+// ... scene 动画代码 ...
+
+// 2. Timeline 注册到 window.__timelines
+//    HyperFrames 通过此对象自动发现 timeline
+window.__timelines = window.__timelines || {};
+window.__timelines['<project-name>'] = tl;
+```
+
+**关键规则：**
+- `{ paused: true }` 不可省略 — 省略后 timeline 自动播放，HyperFrames 无法控制
+- `window.__timelines` 不可改为其他名称（如 `window.__hf`） — HyperFrames 只识别 `__timelines`
+- `<project-name>` 必须与 HTML 中 `data-composition-id` 一致
+
+### 集成检查清单
+
+- [ ] HTML 根容器有 `data-composition-id`、`data-start`、`data-width`、`data-height`
+- [ ] GSAP timeline 使用 `{ paused: true }` 创建
+- [ ] Timeline 注册到 `window.__timelines[<composition-id>]`
+- [ ] composition-id 在 HTML 和 JS 中一致
+
 ## 流程
 
 ### Step 1：读取合同
@@ -77,7 +126,7 @@ project/
 - 使用 `references/motion-principles.md` 中的动效标准
 
 ```javascript
-const tl = gsap.timeline();
+const tl = gsap.timeline({ paused: true });
 
 // scene_01: hook (0s - 4s)
 tl.from('#scene-01 .title', { opacity: 0, y: 30, duration: 1, ease: 'power2.out' })
@@ -107,19 +156,61 @@ tl.to('#scene-01', { opacity: 0, duration: 0.5 })
 不累积 5 个 scene 后再一起看。每个 scene 独立验证。
 </HARD-GATE>
 
+**Preview 方法：**
+
+**方法 1：浏览器直接打开**
+- 用浏览器打开 `project/index.html`
+- 在控制台手动播放 timeline：`window.__timelines['<composition-id>'].play()`
+
+**方法 2：单 scene 验证**
+- 在控制台跳转到特定 scene 起始时间：`tl.time(<scene-start>).play()`
+- scene 起始时间从 `storyboard.json` 获取
+
+**方法 3：截图验证**
+- 使用 Playwright MCP 工具截图对比 styleframe
+- 暂停 timeline 在关键帧：`tl.pause(<time>)`，然后截图
+
 验证项：
 - [ ] scene 结构与 storyboard 一致
 - [ ] 视觉效果与 styleframe 一致
 - [ ] 动画时长匹配 storyboard
-- [ ] 无 JS 错误
-- [ ] 无缺资源
+- [ ] 无 JS 错误（打开 DevTools Console 检查）
+- [ ] 无缺资源（Network tab 无 404）
+
+### Step 5.5：Duration Gate
+
+<HARD-GATE>
+**Timeline 实际时长必须与 storyboard 目标时长匹配，容差 5%。**
+超过 5% 偏差必须修复后才能进入 Step 6。
+</HARD-GATE>
+
+**验证方法：** 在浏览器控制台执行：
+
+```javascript
+const actualDuration = tl.duration();
+const targetDuration = <storyboard-total-duration>;
+const deviation = Math.abs(actualDuration - targetDuration) / targetDuration * 100;
+console.log(`目标: ${targetDuration}s, 实际: ${actualDuration.toFixed(2)}s, 偏差: ${deviation.toFixed(1)}%`);
+```
+
+**判断标准：**
+
+| 偏差 | 状态 | 处理 |
+|------|------|------|
+| 0-5% | PASS | 继续下一步 |
+| 5-15% | WARNING | 记录偏差，调整 scene 间 `+=` 延迟值 |
+| >15% | BLOCKING | 必须修复 |
+
+**常见修复方式：**
+- 偏短 → 增加 scene 间 `+=` 延迟值、增加 ending scene 停留时间
+- 偏长 → 减少 scene 间 overlap、缩短非关键动画、或回到 storyboard 缩减 scene
 
 ### Step 6：Timeline 集成
 
 所有 scene 通过后，组装完整 timeline：
 
 - 检查 scene 间转场
-- 检查总时长匹配 brief
+- **运行 Duration Gate 验证（Step 5.5）**
 - 检查整体节奏感
 - Preview 完整视频
 
