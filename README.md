@@ -61,7 +61,7 @@ Plugins → Add Marketplace → ZeroZ-lab/motioncraft-skills
 
 ## 示例项目
 
-`docs/video/motioncraft-intro/` 包含一个完整的 60s 介绍视频示例，覆盖全部 8 步 pipeline，包含 HyperFrames 渲染集成。
+`docs/video/deepseek-v4/` 包含一个完整示例，覆盖 brief → title-cover → script-beats → storyboard → styleframes 全 5 步 pipeline，包含 HyperFrames 渲染集成。
 
 ## 产出物
 

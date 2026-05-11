@@ -29,7 +29,7 @@ description: 项目初始化。使用 cuando 有一个视频想法需要初始�
 
 ### Step 1：项目名推断 + 确认（门控 1）
 
-从用户输入推断项目名（composition_id），格式约束 `^[a-z][a-z0-9-]{1,47}$`（2-48 字符）。。
+从用户输入推断项目名（composition_id），格式约束 `^[a-z][a-z0-9-]{1,47}$`（2-48 字符）。
 
 | 输入类型 | 推断策略 | 置信度 | 处理 |
 |---------|---------|--------|------|
@@ -85,7 +85,7 @@ description: 项目初始化。使用 cuando 有一个视频想法需要初始�
 
 **验证**: 替换后检查 index.html 和 motion.js 中无残留 `PLACEHOLDER_COMPOSITION_ID` 代码行（注释行中的可保留）。
 
-**安全**: composition_id 已通过格式约束校验（`^[a-z][a-z0-9-]{1,48}$`），替换到 HTML 属性和 JS 字串不会产生注入风险。SRI integrity 属性不受替换影响（PLACEHOLDER 不出现在 SRI 相关行中）。
+**安全**: composition_id 已通过格式约束校验（`^[a-z][a-z0-9-]{1,47}$`），替换到 HTML 属性和 JS 字串不会产生注入风险。SRI integrity 属性不受替换影响（PLACEHOLDER 不出现在 SRI 相关行中）。
 
 **3.3 创建 .mc-project.json**
 
@@ -154,7 +154,7 @@ created_at 使用 ISO 8601 UTC 格式（如 `2026-05-11T14:30:00Z`），不使�
 - project/ 已存在时继续执行（不覆盖、不合并）
 - 跳过项目名确认门控（项目名必须人类确认）
 - 跳过模板选择 Checkpoint 0（模板必须人类确认）
-- composition_id 包含非 kebab-case 字符（不符合 `^[a-z][a-z0-9-]{1,48}$`）
+- composition_id 包含非 kebab-case 字符（不符合 `^[a-z][a-z0-9-]{1,47}$`）
 - 模板名不在白名单 `[dark-tech, minimal-clean, bold-editorial, data-visualization]` 中
 - 低置信度时默认推荐 dark-tech（低置信度必须平等展示 4 模板）
 - PLACEHOLDER 替换影响 SRI integrity 属性（SRI 行不可修改）
@@ -162,7 +162,7 @@ created_at 使用 ISO 8601 UTC 格式（如 `2026-05-11T14:30:00Z`），不使�
 
 ## 验证清单
 
-- [ ] 项目名已确认 + composition_id 格式校验通过（`^[a-z][a-z0-9-]{1,48}$`）
+- [ ] 项目名已确认 + composition_id 格式校验通过（`^[a-z][a-z0-9-]{1,47}$`）
 - [ ] 模板已确认 + 模板名在白名单 `[dark-tech, minimal-clean, bold-editorial, data-visualization]` 中
 - [ ] Checkpoint 0 不可逆决策警告已展示
 - [ ] project/ 目录已初始化

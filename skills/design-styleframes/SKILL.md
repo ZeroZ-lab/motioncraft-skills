@@ -247,11 +247,14 @@ styleframes:
 
 ## 红旗
 
+<HARD-GATE>
+以下任何一个出现，立即停止：
 - 没有视觉焦点的 keyframe
 - 文字超过 2 行的 scene
 - 层级不分的构图
 - 场景间风格不一致
 - 没有通过构图检查就进入 composition
+</HARD-GATE>
 
 ## 验证清单
 

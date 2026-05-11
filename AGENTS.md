@@ -124,7 +124,7 @@ output/
 - 命令加载技能，但不重复技能内容
 
 ### 参考示例
-- 完整 7 步 pipeline 示例见 `docs/video/motioncraft-intro/`
+- 完整 pipeline 示例见 `docs/video/deepseek-v4/`
 
 ## 边界
 

@@ -1,0 +1,13 @@
+# 产出目录
+output/
+project/
+
+# 截图和临时图片
+*.png
+
+# 开发过程目录
+spike-dual-engine/
+.playwright-mcp/
+
+# OS 文件
+.DS_Store
