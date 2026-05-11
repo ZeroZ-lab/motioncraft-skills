@@ -161,6 +161,10 @@ window.__timelines['<project-name>'] = tl;
 
 读取 storyboard 和 styleframes，理解每个 scene 的完整定义。不猜测，不发明。
 
+读取 storyboard 时，特别关注每个 scene 的：
+- `content_type`：6 种内容类型之一
+- `animation_strategy`：对应 `references/scene-animation-guide.md` 策略词表中的策略名
+
 ### Step 2：初始化工程
 
 创建工程目录结构：
@@ -196,16 +200,22 @@ project/
 - 每个 scene 的动画时长匹配 storyboard
 - 使用 `references/motion-principles.md` 中的动效标准
 
+**动画策略查找**：读取每个 scene 的 `animation_strategy` 值，在 `references/scene-animation-guide.md` 中查找对应的代码模板和参数范围。不重新发明动画方案——从 Guide 的策略执行。
+
+**Scene label（推荐）**：在每个 scene 动画块前插入 `tl.addLabel('<scene_id>')`，使用 storyboard 中的 scene id（如 `scene_01`）。这允许在 preview 时通过 `tl.time()` 或 label 跳转到特定 scene。
+
 ```javascript
 const tl = gsap.timeline({ paused: true });
 
-// scene_01: hook (0s - 4s)
-tl.from('#scene-01 .title', { opacity: 0, y: 30, duration: 1, ease: 'power2.out' })
+// scene_01: hook (0s - 4s) | strategy: title_reveal → Pattern 1
+tl.addLabel('scene_01')
+  .from('#scene-01 .title', { opacity: 0, y: 30, duration: 1, ease: 'power2.out' })
   .from('#scene-01 .subtitle', { opacity: 0, duration: 0.8 }, '-=0.5')
   // ...
 
-// scene_02: problem (4s - 10s)
-tl.to('#scene-01', { opacity: 0, duration: 0.5 })
+// scene_02: problem (4s - 10s) | strategy: text_highlight → Pattern 6
+tl.addLabel('scene_02')
+  .to('#scene-01', { opacity: 0, duration: 0.5 })
   .from('#scene-02 .problem-text', { opacity: 0, scale: 0.8, duration: 0.8 })
   // ...
 

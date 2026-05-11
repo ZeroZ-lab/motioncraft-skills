@@ -15,15 +15,17 @@
 
 ### Scene Block 选型
 
-| 需求 | 推荐 | 理由 |
-|------|------|------|
-| 标题出现 | GSAP from() | 简单淡入/位移 |
-| 卡片堆叠 | GSAP stagger | 批量动画标准方案 |
-| 线条绘制 | SVG + GSAP drawSVG | 路径动画标准方案 |
-| 数据流动 | GSAP motionPath | 沿路径动画 |
-| 粒子效果 | PixiJS | 大量对象高性能 |
-| 3D 效果 | Three.js | 仅在必要时 |
-| 图表构建 | GSAP + SVG | 逐步构建 |
+| 需求 | Content Type | 推荐 | 理由 |
+|------|-------------|------|------|
+| 标题出现 | text | GSAP from() | 简单淡入/位移 |
+| 卡片堆叠 | comparison, concept | GSAP stagger | 批量动画标准方案 |
+| 线条绘制 | process | SVG + GSAP drawSVG | 路径动画标准方案 |
+| 数据流动 | process | GSAP motionPath | 沿路径动画 |
+| 粒子效果 | mood | PixiJS | 大量对象高性能 |
+| 3D 效果 | mood | Three.js | 仅在必要时 |
+| 图表构建 | concept, process | GSAP + SVG | 逐步构建 |
+| 数字计数 | data | GSAP to() + onUpdate | 数值动画 |
+| 代码打字 | text (code_text) | GSAP stagger (char) | 逐字出现 |
 
 ### Easing 标准
 
@@ -88,6 +90,37 @@
 ### Timeline 延伸
 - 添加音频后，motion.js 末尾必须加 `tl.set({}, {}, STORYBOARD_DURATION)`
 - 确保音频不被截断
+
+## Scene Animation Guide 引用
+
+所有 scene 动画设计决策应参考 `references/scene-animation-guide.md`。
+
+### Content-type → Pattern 映射表
+
+| Content Type | Primary Pattern(s) | Secondary Pattern(s) | 推荐 Easing |
+|---|---|---|---|
+| text | P1 Title Reveal, P6 Text Highlight | P10 Ending Reveal | power2.out |
+| text (code_text) | 自定义 typewriter | P6 Text Highlight (syntax) | — |
+| data | P4 Number Count | P2 Stagger Cards (组合) | power1.out |
+| concept | P5 Diagram Build | P8 Card Stack | power1.inOut |
+| process | P3 Line Draw | P5 Diagram Build | power1.inOut |
+| comparison | P2 Stagger Cards, P9 Grid Swap | P8 Card Stack | power2.out |
+| mood | P7 Camera Pan, P10 Ending Reveal | — | power1.inOut / back.out |
+
+### 策略查找流程
+
+1. 读取 scene 的 `animation_strategy` 值（如 `title_reveal`）
+2. 在 scene-animation-guide.md 中查找对应策略
+3. 获取该策略的：Primary Pattern、推荐 easing、参数范围、代码模板
+4. 按代码模板实现，不重新发明
+
+### Mood 型场景的特殊指导
+
+mood 型 scene 的动画策略主要是**转场选择 + 环境动画**，而非幕内元素动画。
+
+- 参考转场策略：`references/motion-principles.md` Section 11
+- 参考交叉矩阵：content-type × transition 推荐组合
+- mood 型推荐转场：fade（★★最佳）、scale、cut
 
 ## 输出结构
 

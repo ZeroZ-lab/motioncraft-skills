@@ -1,7 +1,7 @@
 {
   "name": "motioncraft-skills",
-  "version": "1.5.0",
-  "description": "Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色 + HyperFrames + 音频管线，Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA",
+  "version": "1.6.0",
+  "description": "Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色 + HyperFrames + 音频管线 + Scene Animation Guide，Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA",
   "scripts": {},
   "author": "gm-video",
   "license": "MIT",

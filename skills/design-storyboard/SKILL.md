@@ -56,13 +56,50 @@ scenes:
     start_time: 0             # 开始时间（秒）
     duration: 4               # 持续时长（秒）
     purpose: hook             # 功能目的
+    content_type: text            # 新增：6 种内容类型之一
+    animation_strategy: title_reveal  # 新增：Scene Animation Guide 策略词表
     narration:                # 旁白/字幕文本
     on_screen_text:           # 屏幕文字
     visual:                   # 画面描述
-    motion:                   # 动效意图
-    transition:               # 转场方式
+    motion:                       # 保持不变：意图词数组
+      - reveal
+      - fade
+    transition: cross-dissolve    # 保持不变：转场方式
     assets:                   # 所需素材
 ```
+
+#### 内容类型判断
+
+每个 scene 必须标注 `content_type` 和 `animation_strategy`。判断方法：
+
+**步骤 1：确定 content_type**
+
+根据 scene 的 `purpose` 和 `visual` 描述，从 6 种类型中选择：
+
+| purpose | visual 关键词 | → content_type |
+|---------|-------------|----------------|
+| hook | 标题、大字、引言 | text |
+| hook | 冲击画面、全景 | mood |
+| problem | 文字要点、列表 | text |
+| problem | 数据、统计、图表 | data |
+| insight | 原理、定义、分类 | concept |
+| example | 代码、终端、编辑器 | text |
+| model | 架构、系统、流程 | process |
+| comparison | A vs B、前后对比 | comparison |
+| conclusion | 总结、CTA、品牌 | mood |
+| conclusion | 文字总结 | text |
+
+**步骤 2：选择 animation_strategy**
+
+从 `references/scene-animation-guide.md` 的策略词表中选择对应策略名。AI 不自创策略。
+
+**多类型场景规则**（参考 scene-animation-guide.md）：
+1. purpose 优先于 content：hook/ending purpose → mood type
+2. 视觉主导内容：核心视觉元素决定类型
+3. 拆分优先：可拆分则拆为两个 scene
+4. 不拆分时取承载核心信息的类型
+
+**重要**：`motion` 字段保持字符串数组不变，`content_type` 和 `animation_strategy` 为新增独立字段。
 
 ### Step 3：时间轴验证
 
@@ -141,6 +178,8 @@ scene 时间是否重叠？
 - beat_id: beat_01
 - time: 0s - 4s
 - purpose: hook
+- content_type:
+- animation_strategy:
 - narration:
 - on_screen_text:
 - visual:
@@ -205,5 +244,7 @@ scene 时间是否重叠？
 - [ ] 时间轴无重叠，总时长匹配
 - [ ] 每个 scene 有动效意图
 - [ ] 每个 scene 有转场设计
+- [ ] 每个 scene 有 content_type
+- [ ] animation_strategy 引用策略词表
 - [ ] storyboard-reviewer 已审查
 - [ ] 用户已批准 storyboard

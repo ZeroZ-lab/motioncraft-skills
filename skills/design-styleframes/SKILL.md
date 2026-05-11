@@ -95,6 +95,8 @@ document.fonts.ready.then(() => {
 ```yaml
 styleframes:
   - scene_id: scene_01
+    content_type: text              # 新增：来自 storyboard
+    animation_strategy: title_reveal  # 新增：来自 storyboard
     frame_description:        # 画面整体描述
     layout:                   # 布局方式
     typography:               # 文字排版
@@ -127,14 +129,46 @@ styleframes:
 
 ### Step 4：动效潜力评估
 
-评估每个 keyframe 适合的动效类型：
+根据 `content_type` 差异化评估动效潜力。
 
-```
-这个场景适合什么类型的动画？
-动画能帮助理解吗？
-动画是否太多/太少？
-关键元素的入场/退场方式？
-```
+#### 按 content_type 的评估问题
+
+**text 型**:
+- 文字展示后是否有足够停留时间（≥ 0.5s）让阅读？
+- 文字层级是否引导视线（标题 → 副标题 → 正文）？
+- 关键词是否有高亮/强调动效？
+
+**data 型**:
+- 数量感是否通过动画建立（数字计数而非静态显示）？
+- 数据是否有上下文标注（单位、基准值）？
+- 多个指标是否有时序展开（stagger）？
+
+**concept 型**:
+- 概念是否逐层递进展示？
+- 抽象概念是否通过动画具象化？
+- 层次关系是否通过动效表达？
+
+**process 型**:
+- 流程方向是否清晰可见（箭头/路径）？
+- 步骤连接是否通过动画表达？
+- 整体流向是否引导视线？
+
+**comparison 型**:
+- 差异是否通过动效突出（而非静态并排）？
+- A/B 侧是否有视觉分隔？
+- 参照物是否先建立再展示差异？
+
+**mood 型**:
+- 氛围是否通过背景动画建立？
+- 转场是否与情绪匹配？
+- 是否有足够的视觉冲击力？
+
+#### animation_strategy 可行性检查
+
+评估给定的 `animation_strategy`（来自 storyboard）在当前 visual layout 下是否可实现：
+- 布局是否有足够空间执行策略对应的动效？
+- 元素层级是否支持策略要求的动画序列？
+- 如果不可行，建议调整 strategy 或 visual layout
 
 ### Step 5：Styleframe Scout（styleframe-reviewer）
 
