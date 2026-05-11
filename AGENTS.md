@@ -91,10 +91,10 @@ docs/video/<name>/
 └── 06-qa-report.md       ← /mc-render-qa
 
 project/
-├── index.html
+├── index.html          — 含 data-composition-id（HyperFrames 集成）
 ├── styles.css
-├── motion.js
-├── storyboard.json
+├── motion.js           — 含 window.__timelines 注册
+├── storyboard.json     — 含 total_duration
 └── assets/
 
 output/
@@ -118,6 +118,9 @@ output/
 ### 命令
 - `commands/` 下每个命令一个 `.md` 文件
 - 命令加载技能，但不重复技能内容
+
+### 参考示例
+- 完整 7 步 pipeline 示例见 `docs/video/motioncraft-intro/`
 
 ## 边界
 

@@ -137,6 +137,10 @@ tl.from('#scene-01 .title', { opacity: 0, y: 30, duration: 1, ease: 'power2.out'
 tl.to('#scene-01', { opacity: 0, duration: 0.5 })
   .from('#scene-02 .problem-text', { opacity: 0, scale: 0.8, duration: 0.8 })
   // ...
+
+// 注册 timeline（HyperFrames 集成）
+window.__timelines = window.__timelines || {};
+window.__timelines['<project-name>'] = tl;
 ```
 
 ### Step 4：技术指导（motion-engineer）

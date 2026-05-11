@@ -57,6 +57,10 @@ Plugins → Add Marketplace → ZeroZ-lab/motioncraft-skills
 
 3 个 Checkpoint 需要你确认后才继续。
 
+## 示例项目
+
+`docs/video/motioncraft-intro/` 包含一个完整的 60s 介绍视频示例，覆盖全部 7 步 pipeline，包含 HyperFrames 渲染集成。
+
 ## 产出物
 
 ```
@@ -98,7 +102,7 @@ output/
 
 默认推荐：
 
-- **HyperFrames** — HTML → Preview → Render
+- **HyperFrames** — HTML → Preview → Render（需要 `data-composition-id` + `window.__timelines` 集成）
 - **HTML / CSS / SVG** — 画面结构
 - **GSAP** — 时间轴动画
 - **PixiJS / Three.js** — 仅在需要特效时调用

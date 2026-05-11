@@ -113,6 +113,20 @@ scene 时间是否重叠？
 
 输出到 `docs/video/<name>/04-storyboard.md` 和 `storyboard.json`：
 
+**storyboard.json 必须包含 `total_duration` 字段**，供 Duration Gate 验证使用：
+
+```json
+{
+  "video": {
+    "name": "<视频名称>",
+    "total_duration": 60,
+    "duration": 60,
+    ...
+  },
+  "scenes": [...]
+}
+```
+
 ```markdown
 # Storyboard: <视频名称>
 
