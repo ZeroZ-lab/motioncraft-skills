@@ -1,0 +1,11 @@
+{
+  "_comment": "Minimal Clean 模板 storyboard — 空结构骨架，填充场景后与 motion.js 时间轴对齐",
+  "video": {
+    "name": "minimal-clean",
+    "total_duration": 0,
+    "duration": 0,
+    "resolution": { "width": 1920, "height": 1080 },
+    "fps": 30
+  },
+  "scenes": []
+}

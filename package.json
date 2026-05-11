@@ -1,7 +1,7 @@
 {
   "name": "motioncraft-skills",
-  "version": "1.6.0",
-  "description": "Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色 + HyperFrames + 音频管线 + Scene Animation Guide，Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA",
+  "version": "1.7.0",
+  "description": "Web 动画视频生产技能套件 — 宪法 + 7 技能 + 7 命令 + 6 角色 + HyperFrames + 音频管线 + Scene Animation Guide + Scene Block Library (8 GSAP blocks + MANIFEST) + Template Scaffolding (4 templates)，Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA",
   "scripts": {},
   "author": "gm-video",
   "license": "MIT",
@@ -11,7 +11,9 @@
     "video-production",
     "web-motion",
     "gsap",
-    "hyperframes"
+    "hyperframes",
+    "scene-blocks",
+    "templates"
   ],
   "repository": {
     "type": "git",

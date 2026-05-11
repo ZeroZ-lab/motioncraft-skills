@@ -1,0 +1,177 @@
+<!-- BLOCK: camera_pan | engine: gsap | aliases: atmosphere_build -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Demo: camera_pan</title>
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN with SRI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* === MotionCraft CSS Variable Convention (--mc-*) ===
+     *
+     * Core colors: --mc-bg, --mc-bg-alt, --mc-text, --mc-text-muted, --mc-primary, --mc-accent, --mc-border
+     * Fonts: --mc-font-primary, --mc-font-secondary, --mc-heading-size, --mc-body-size
+     * Spacing: --mc-spacing-sm, --mc-spacing-md, --mc-spacing-lg
+     * Motion: --mc-duration-default, --mc-easing-default, --mc-enter-type, --mc-exit-type
+     *
+     * Rules:
+     * - Each :root variable must have a fallback value (var(--mc-bg, #0a0a1a))
+     * - Block demo uses default values; Template overrides default values
+     * - Custom templates must define all 16+ variables
+     */
+    :root {
+      --mc-bg: #0a0a1a;
+      --mc-bg-alt: #1a1a2e;
+      --mc-text: #e0e0e0;
+      --mc-text-muted: #6b6b7b;
+      --mc-primary: #00ff88;
+      --mc-accent: #00cc6a;
+      --mc-border: #2a2a3a;
+      --mc-font-primary: 'Inter', sans-serif;
+      --mc-font-secondary: 'JetBrains Mono', monospace;
+      --mc-heading-size: 2.5rem;
+      --mc-body-size: 1rem;
+      --mc-spacing-sm: 0.5rem;
+      --mc-spacing-md: 1rem;
+      --mc-spacing-lg: 2rem;
+      --mc-duration-default: 1.2;
+      --mc-easing-default: power1.inOut;
+      --mc-enter-type: from-offset;
+      --mc-exit-type: none;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--mc-bg, #0a0a1a);
+      color: var(--mc-text, #e0e0e0);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .viewport {
+      width: 1920px;
+      max-width: 100vw;
+      height: 1080px;
+      max-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .viewport-background {
+      width: 2400px;
+      height: 1600px;
+      position: absolute;
+      top: -200px;
+      left: -200px;
+      background: linear-gradient(
+        135deg,
+        var(--mc-bg, #0a0a1a) 0%,
+        var(--mc-bg-alt, #1a1a2e) 30%,
+        #16213e 60%,
+        #0f3460 100%
+      );
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .viewport-background::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .focal-content {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .focal-content .focal-title {
+      font-size: var(--mc-heading-size, 2.5rem);
+      font-weight: 700;
+      color: var(--mc-primary, #00ff88);
+      margin-bottom: var(--mc-spacing-sm, 0.5rem);
+    }
+
+    .focal-content .focal-subtitle {
+      font-size: var(--mc-body-size, 1rem);
+      color: var(--mc-text-muted, #6b6b7b);
+      font-family: var(--mc-font-secondary, 'JetBrains Mono', monospace);
+    }
+
+    /* CSS state model: viewport at final pan position */
+    .viewport {
+      transform: none;
+    }
+
+    .viewport-background {
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport" id="viewport-demo">
+    <div class="viewport-background">
+      <div class="focal-content">
+        <div class="focal-title">视角平移</div>
+        <div class="focal-subtitle">camera_pan · atmosphere_build</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ?static=true XSS-safe parsing: only check key existence, never use values in DOM
+    const isStatic = new URLSearchParams(window.location.search).has('static');
+
+    if (isStatic) {
+      // Static mode: skip animation, show final state only
+      // CSS already defines final visible state (transform: none)
+      // No timeline creation needed
+    } else {
+      // camera_pan — 视角平移
+      // Easing: power1.inOut (smooth in-out transition)
+      // Duration: 1.0-1.5s (default 1.2s)
+      // x offset: -200 → 0
+      // scale: 1.5 → 1
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from('.viewport', {
+        x: -200,
+        scale: 1.5,
+        duration: 1.2,
+        ease: 'power1.inOut'
+      });
+
+      <!-- DEMO-ONLY -->
+      window.__timelines = window.__timelines || {};
+      window.__timelines['block-demo-camera_pan'] = tl;
+      tl.play();
+      <!-- END DEMO-ONLY -->
+    }
+  </script>
+</body>
+</html>

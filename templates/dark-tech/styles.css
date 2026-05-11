@@ -1,0 +1,93 @@
+/* =========================================================
+   MotionCraft CSS Variable Convention (--mc-*)
+   =========================================================
+
+   颜色变量
+   --mc-bg          : 主背景色               fallback #0a0a1a
+   --mc-bg-alt      : 辅助背景色             fallback #1a1a2e
+   --mc-text        : 主文本色               fallback #e0e0e0
+   --mc-text-muted  : 辅助文本色（说明/注释） fallback #6b6b7b
+   --mc-primary     : 主强调色               fallback #00ff88
+   --mc-accent      : 辅助强调色             fallback #00cc6a
+   --mc-border      : 边框/分割线色          fallback #2a2a3a
+
+   字体变量
+   --mc-font-primary   : 主字体               fallback 'Inter', sans-serif
+   --mc-font-secondary : 辅助字体（代码/数据） fallback 'JetBrains Mono', monospace
+   --mc-heading-size   : 标题字号             fallback 2.5rem
+   --mc-body-size      : 正文字号             fallback 1rem
+
+   间距变量
+   --mc-spacing-sm  : 小间距                 fallback 0.5rem
+   --mc-spacing-md  : 中间距                 fallback 1rem
+   --mc-spacing-lg  : 大间距                 fallback 2rem
+
+   运动变量
+   --mc-duration-default : 默认动画时长       fallback 0.8
+   --mc-easing-default   : 默认缓动函数       fallback 'power2.out'
+   --mc-enter-type       : 入场动画类型       fallback 'from-hidden'
+   --mc-exit-type        : 出场动画类型       fallback 'to-hidden'
+
+   ========================================================= */
+
+:root {
+  --mc-bg: #0a0a1a;
+  --mc-bg-alt: #1a1a2e;
+  --mc-text: #e0e0e0;
+  --mc-text-muted: #6b6b7b;
+  --mc-primary: #00ff88;
+  --mc-accent: #00cc6a;
+  --mc-border: #2a2a3a;
+
+  --mc-font-primary: 'Inter', sans-serif;
+  --mc-font-secondary: 'JetBrains Mono', monospace;
+  --mc-heading-size: 2.5rem;
+  --mc-body-size: 1rem;
+
+  --mc-spacing-sm: 0.5rem;
+  --mc-spacing-md: 1rem;
+  --mc-spacing-lg: 2rem;
+
+  /* 运动变量 — 值为 GSAP 参数，CSS 中仅作声明占位，
+     实际缓动与时长由 motion.js 中的 GSAP timeline 读取 */
+  --mc-duration-default: 0.8;
+  --mc-easing-default: 'power2.out';
+  --mc-enter-type: 'from-hidden';
+  --mc-exit-type: 'to-hidden';
+}
+
+/* ---- Base layout ---- */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--mc-bg, #0a0a1a);
+  font-family: var(--mc-font-primary, 'Inter', sans-serif);
+  font-size: var(--mc-body-size, 1rem);
+  color: var(--mc-text, #e0e0e0);
+  overflow: hidden;
+}
+
+.video-container {
+  position: relative;
+  width: var(--mc-width, 1920px);
+  height: var(--mc-height, 1080px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mc-bg, #0a0a1a);
+}
+
+/* ---- Scene container ---- */
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* CSS state model: opacity 1 by default;
+     GSAP timeline controls actual enter/exit opacity */
+  opacity: 1;
+  overflow: hidden;
+}

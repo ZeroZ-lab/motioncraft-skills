@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MotionCraft Scene Block MANIFEST",
+  "description": "Schema for MANIFEST.json — index of scene block demos and integration guides",
+  "type": "object",
+  "required": ["version", "gsap_compatible", "blocks"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "MANIFEST format version (semver)"
+    },
+    "gsap_compatible": {
+      "type": "string",
+      "description": "Minimum compatible GSAP version"
+    },
+    "blocks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["file", "guide", "engine", "aliases", "params", "required_html", "verified_gsap_version"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Path to block demo .html relative to references/scene-blocks/"
+          },
+          "guide": {
+            "type": "string",
+            "description": "Path to integration guide .md relative to references/scene-blocks/"
+          },
+          "engine": {
+            "type": "string",
+            "enum": ["gsap", "animejs"],
+            "description": "Animation engine for this block"
+          },
+          "aliases": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Strategy names that map to this block (primary strategy excluded)"
+          },
+          "params": {
+            "type": "object",
+            "description": "Tunable animation parameters with min/max/default ranges",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["min", "max", "default"],
+              "properties": {
+                "min": { "type": "number" },
+                "max": { "type": "number" },
+                "default": { "type": "number" }
+              }
+            }
+          },
+          "required_html": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Required HTML element selectors/structures for this block"
+          },
+          "verified_gsap_version": {
+            "type": "string",
+            "description": "GSAP version used to verify this block demo works correctly"
+          }
+        }
+      }
+    }
+  }
+}

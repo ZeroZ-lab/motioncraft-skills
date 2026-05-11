@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "gsap_compatible": ">=3.12",
+  "blocks": {
+    "title_reveal": {
+      "file": "text/title_reveal.html",
+      "guide": "text/title_reveal.md",
+      "engine": "gsap",
+      "aliases": ["text_ending"],
+      "params": {
+        "duration_title": { "min": 0.6, "max": 1.0, "default": 0.8 },
+        "duration_subtitle": { "min": 0.4, "max": 0.6, "default": 0.5 },
+        "y_offset_title": { "min": 20, "max": 40, "default": 30 },
+        "y_offset_subtitle": { "min": 10, "max": 20, "default": 15 },
+        "overlap": { "min": 0.2, "max": 0.4, "default": 0.3 },
+        "hold": { "min": 0.5, "max": 1.0, "default": 0.5 }
+      },
+      "required_html": [".title", ".subtitle"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "text_highlight": {
+      "file": "text/text_highlight.html",
+      "guide": "text/text_highlight.md",
+      "engine": "gsap",
+      "aliases": [],
+      "params": {
+        "duration_content": { "min": 0.4, "max": 0.6, "default": 0.5 },
+        "duration_keyword": { "min": 0.3, "max": 0.5, "default": 0.4 },
+        "stagger_keyword": { "min": 0.15, "max": 0.2, "default": 0.2 }
+      },
+      "required_html": [".text-content", ".keyword"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "text_typewriter": {
+      "file": "text/text_typewriter.html",
+      "guide": "text/text_typewriter.md",
+      "engine": "gsap",
+      "aliases": [],
+      "params": {
+        "char_speed_ms": { "min": 30, "max": 80, "default": 50 },
+        "cursor_blink_s": { "min": 0.3, "max": 0.7, "default": 0.5 }
+      },
+      "required_html": [".code-line", ".cursor"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "number_count": {
+      "file": "data/number_count.html",
+      "guide": "data/number_count.md",
+      "engine": "gsap",
+      "aliases": ["data_dashboard"],
+      "params": {
+        "duration_count": { "min": 1.0, "max": 2.0, "default": 1.5 },
+        "duration_label": { "min": 0.3, "max": 0.5, "default": 0.4 }
+      },
+      "required_html": [".metric-label", ".metric-number", ".metric-unit"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "diagram_build": {
+      "file": "concept/diagram_build.html",
+      "guide": "concept/diagram_build.md",
+      "engine": "gsap",
+      "aliases": ["concept_layers", "card_stack"],
+      "params": {
+        "duration_layer": { "min": 0.4, "max": 0.6, "default": 0.5 },
+        "duration_connection": { "min": 0.6, "max": 1.0, "default": 0.8 },
+        "overlap_layer": { "min": 0.2, "max": 0.3, "default": 0.2 }
+      },
+      "required_html": [".layer-1", ".layer-2", ".layer-3", ".connection-1", ".connection-2"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "line_draw": {
+      "file": "process/line_draw.html",
+      "guide": "process/line_draw.md",
+      "engine": "gsap",
+      "aliases": ["flow_build", "pipeline_sequence"],
+      "params": {
+        "duration_path": { "min": 0.8, "max": 1.5, "default": 1.0 },
+        "duration_node": { "min": 0.3, "max": 0.5, "default": 0.4 },
+        "stagger_node": { "min": 0.2, "max": 0.3, "default": 0.25 }
+      },
+      "required_html": [".flow-path", ".flow-node"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "stagger_compare": {
+      "file": "comparison/stagger_compare.html",
+      "guide": "comparison/stagger_compare.md",
+      "engine": "gsap",
+      "aliases": ["grid_swap", "before_after"],
+      "params": {
+        "duration_card": { "min": 0.4, "max": 0.6, "default": 0.5 },
+        "stagger_card": { "min": 0.1, "max": 0.2, "default": 0.15 }
+      },
+      "required_html": [".compare-a .card", ".compare-b .card"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "camera_pan": {
+      "file": "mood/camera_pan.html",
+      "guide": "mood/camera_pan.md",
+      "engine": "gsap",
+      "aliases": ["atmosphere_build"],
+      "params": {
+        "duration_pan": { "min": 1.0, "max": 1.5, "default": 1.2 },
+        "scale_range": { "min": 1.0, "max": 2.0, "default": 1.5 }
+      },
+      "required_html": [".viewport"],
+      "verified_gsap_version": "3.12.5"
+    },
+    "ending_reveal": {
+      "file": "mood/ending_reveal.html",
+      "guide": "mood/ending_reveal.md",
+      "engine": "gsap",
+      "aliases": [],
+      "params": {
+        "duration_fadeout": { "min": 0.4, "max": 0.6, "default": 0.5 },
+        "duration_title": { "min": 0.6, "max": 1.0, "default": 0.8 },
+        "duration_cta": { "min": 0.4, "max": 0.6, "default": 0.5 }
+      },
+      "required_html": [".scene-content", ".ending-title", ".ending-subtitle", ".cta"],
+      "verified_gsap_version": "3.12.5"
+    }
+  }
+}

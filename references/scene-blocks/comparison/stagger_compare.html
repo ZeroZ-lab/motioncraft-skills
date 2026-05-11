@@ -1,0 +1,202 @@
+<!-- BLOCK: stagger_compare | engine: gsap | aliases: grid_swap, before_after -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Demo: stagger_compare</title>
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN with SRI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* === MotionCraft CSS Variable Convention (--mc-*) ===
+     *
+     * Core colors: --mc-bg, --mc-bg-alt, --mc-text, --mc-text-muted, --mc-primary, --mc-accent, --mc-border
+     * Fonts: --mc-font-primary, --mc-font-secondary, --mc-heading-size, --mc-body-size
+     * Spacing: --mc-spacing-sm, --mc-spacing-md, --mc-spacing-lg
+     * Motion: --mc-duration-default, --mc-easing-default, --mc-enter-type, --mc-exit-type
+     *
+     * stagger_compare specifics:
+     * --mc-primary = A-side accent color (left column)
+     * --mc-accent  = B-side accent color (right column)
+     *
+     * Rules:
+     * - Each :root variable must have a fallback value (var(--mc-bg, #0a0a1a))
+     * - Block demo uses default values; Template overrides default values
+     * - Custom templates must define all 16+ variables
+     */
+    :root {
+      --mc-bg: #0a0a1a;
+      --mc-bg-alt: #1a1a2e;
+      --mc-text: #e0e0e0;
+      --mc-text-muted: #6b6b7b;
+      --mc-primary: #00ff88;
+      --mc-accent: #ff6b35;
+      --mc-border: #2a2a3a;
+      --mc-font-primary: 'Inter', sans-serif;
+      --mc-font-secondary: 'JetBrains Mono', monospace;
+      --mc-heading-size: 2.5rem;
+      --mc-body-size: 1rem;
+      --mc-spacing-sm: 0.5rem;
+      --mc-spacing-md: 1rem;
+      --mc-spacing-lg: 2rem;
+      --mc-duration-default: 0.5;
+      --mc-easing-default: power2.out;
+      --mc-enter-type: from-hidden;
+      --mc-exit-type: to-hidden;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--mc-bg, #0a0a1a);
+      color: var(--mc-text, #e0e0e0);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .scene {
+      width: 1920px;
+      max-width: 100vw;
+      height: 1080px;
+      max-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--mc-spacing-lg, 2rem);
+    }
+
+    .compare-row {
+      display: flex;
+      gap: var(--mc-spacing-lg, 2rem);
+      width: 100%;
+      max-width: 1200px;
+      justify-content: center;
+    }
+
+    .compare-a,
+    .compare-b {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--mc-spacing-sm, 0.5rem);
+    }
+
+    .compare-label {
+      font-family: var(--mc-font-secondary, 'JetBrains Mono', monospace);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--mc-spacing-md, 1rem);
+    }
+
+    .compare-a .compare-label {
+      color: var(--mc-primary, #00ff88);
+    }
+
+    .compare-b .compare-label {
+      color: var(--mc-accent, #ff6b35);
+    }
+
+    .card {
+      background-color: var(--mc-bg-alt, #1a1a2e);
+      border: 1px solid var(--mc-border, #2a2a3a);
+      border-radius: 8px;
+      padding: var(--mc-spacing-md, 1rem) var(--mc-spacing-lg, 2rem);
+      font-size: var(--mc-body-size, 1rem);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      line-height: 1.5;
+      /* CSS state model: final visible state defined in CSS */
+      opacity: 1;
+      transform: none;
+    }
+
+    .compare-a .card {
+      border-left: 3px solid var(--mc-primary, #00ff88);
+    }
+
+    .compare-b .card {
+      border-left: 3px solid var(--mc-accent, #ff6b35);
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene-demo">
+    <div class="compare-row">
+      <div class="compare-a">
+        <div class="compare-label">方案 A</div>
+        <div class="card">低延迟响应 &lt; 10ms</div>
+        <div class="card">本地缓存优先策略</div>
+        <div class="card">单节点部署简单</div>
+        <div class="card">固定吞吐量上限</div>
+        <div class="card">手动故障恢复</div>
+      </div>
+      <div class="compare-b">
+        <div class="compare-label">方案 B</div>
+        <div class="card">自适应延迟 10-50ms</div>
+        <div class="card">分布式缓存一致性</div>
+        <div class="card">多节点自动扩缩</div>
+        <div class="card">弹性吞吐量无上限</div>
+        <div class="card">自动故障转移</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ?static=true XSS-safe parsing: only check key existence, never use values in DOM
+    const isStatic = new URLSearchParams(window.location.search).has('static');
+
+    if (isStatic) {
+      // Static mode: skip animation, show final state only
+      // CSS already defines final visible state (opacity:1, transform:none)
+      // No timeline creation needed
+    } else {
+      // stagger_compare — A/B 卡片依次出现对比
+      // Easing: power2.out (decelerating entrance)
+      // Card duration: 0.4-0.6s (default 0.5s)
+      // Stagger: 0.15s
+      // A-side: stagger from left (x:-20)
+      // B-side: stagger from right (x:20), overlapping with A
+      // Max 5-7 items per side
+      const tl = gsap.timeline({ paused: true });
+
+      // A-side cards stagger from left
+      tl.from('.compare-a .card', {
+        opacity: 0,
+        x: -20,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: 'power2.out'
+      })
+      // B-side cards stagger from right, overlapping with A-side
+      .from('.compare-b .card', {
+        opacity: 0,
+        x: 20,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: 'power2.out'
+      }, '-=0.6');
+
+      <!-- DEMO-ONLY -->
+      window.__timelines = window.__timelines || {};
+      window.__timelines['block-demo-stagger_compare'] = tl;
+      tl.play();
+      <!-- END DEMO-ONLY -->
+    }
+  </script>
+</body>
+</html>

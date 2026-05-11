@@ -1,0 +1,5 @@
+{
+  "total_duration": 0,
+  "_comment": "空 storyboard 骨架。使用时填写 total_duration（秒）和 scenes 数组，每幕需含 scene_id、duration、animation_strategy、visual、on_screen_text 字段。格式参见 references/scene-animation-guide.md storyboard 字段映射。",
+  "scenes": []
+}

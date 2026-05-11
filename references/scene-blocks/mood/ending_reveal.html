@@ -1,0 +1,191 @@
+<!-- BLOCK: ending_reveal | engine: gsap | aliases: none -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Demo: ending_reveal</title>
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN with SRI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* === MotionCraft CSS Variable Convention (--mc-*) ===
+     *
+     * Core colors: --mc-bg, --mc-bg-alt, --mc-text, --mc-text-muted, --mc-primary, --mc-accent, --mc-border
+     * Fonts: --mc-font-primary, --mc-font-secondary, --mc-heading-size, --mc-body-size
+     * Spacing: --mc-spacing-sm, --mc-spacing-md, --mc-spacing-lg
+     * Motion: --mc-duration-default, --mc-easing-default, --mc-enter-type, --mc-exit-type
+     *
+     * Rules:
+     * - Each :root variable must have a fallback value (var(--mc-bg, #0a0a1a))
+     * - Block demo uses default values; Template overrides default values
+     * - Custom templates must define all 16+ variables
+     */
+    :root {
+      --mc-bg: #0a0a1a;
+      --mc-bg-alt: #1a1a2e;
+      --mc-text: #e0e0e0;
+      --mc-text-muted: #6b6b7b;
+      --mc-primary: #00ff88;
+      --mc-accent: #00cc6a;
+      --mc-border: #2a2a3a;
+      --mc-font-primary: 'Inter', sans-serif;
+      --mc-font-secondary: 'JetBrains Mono', monospace;
+      --mc-heading-size: 2.5rem;
+      --mc-body-size: 1rem;
+      --mc-spacing-sm: 0.5rem;
+      --mc-spacing-md: 1rem;
+      --mc-spacing-lg: 2rem;
+      --mc-duration-default: 0.5;
+      --mc-easing-default: power2.out;
+      --mc-enter-type: from-hidden;
+      --mc-exit-type: to-hidden;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--mc-bg, #0a0a1a);
+      color: var(--mc-text, #e0e0e0);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .scene {
+      width: 1920px;
+      max-width: 100vw;
+      height: 1080px;
+      max-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--mc-spacing-lg, 2rem);
+    }
+
+    .scene-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* CSS state model: final state faded out */
+      opacity: 0;
+    }
+
+    .scene-content .old-title {
+      font-size: 1.5rem;
+      color: var(--mc-text-muted, #6b6b7b);
+    }
+
+    .ending-title {
+      font-size: var(--mc-heading-size, 2.5rem);
+      font-weight: 700;
+      color: var(--mc-primary, #00ff88);
+      margin-bottom: var(--mc-spacing-sm, 0.5rem);
+      /* CSS state model: final visible state */
+      opacity: 1;
+      transform: none;
+    }
+
+    .ending-subtitle {
+      font-size: var(--mc-body-size, 1rem);
+      color: var(--mc-text-muted, #6b6b7b);
+      font-family: var(--mc-font-secondary, 'JetBrains Mono', monospace);
+      margin-bottom: var(--mc-spacing-lg, 2rem);
+      /* CSS state model: final visible state */
+      opacity: 1;
+      transform: none;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: var(--mc-spacing-md, 1rem) var(--mc-spacing-lg, 2rem);
+      background-color: var(--mc-accent, #00cc6a);
+      color: var(--mc-bg, #0a0a1a);
+      font-weight: 700;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      /* CSS state model: final visible state */
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene-demo">
+    <div class="scene-content">
+      <div class="old-title">正在播放的内容</div>
+    </div>
+    <div class="ending-title">结尾揭示</div>
+    <div class="ending-subtitle">ending_reveal · Pattern P10</div>
+    <div class="cta">了解更多</div>
+  </div>
+
+  <script>
+    // ?static=true XSS-safe parsing: only check key existence, never use values in DOM
+    const isStatic = new URLSearchParams(window.location.search).has('static');
+
+    if (isStatic) {
+      // Static mode: skip animation, show final state only
+      // CSS already defines final visible state for ending elements
+      // No timeline creation needed
+    } else {
+      // ending_reveal — 结尾揭示
+      // Pattern P10: Ending Reveal
+      // fade out old content → ending title → subtitle → CTA bounce
+      // fade out: 0.4-0.6s | title: 0.6-1.0s | CTA: 0.4-0.6s
+      // CTA easing: back.out(1.5) bounce
+      const tl = gsap.timeline({ paused: true });
+
+      // Step 1: fade out old content
+      tl.to('.scene-content', {
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.out'
+      })
+      // Step 2: ending title appears
+      .from('.ending-title', {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+        ease: 'power2.out'
+      }, '-=0.1')
+      // Step 3: subtitle appears
+      .from('.ending-subtitle', {
+        opacity: 0,
+        y: 10,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, '-=0.3')
+      // Step 4: CTA with back.out bounce
+      .from('.cta', {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.5,
+        ease: 'back.out(1.5)'
+      }, '-=0.2');
+
+      <!-- DEMO-ONLY -->
+      window.__timelines = window.__timelines || {};
+      window.__timelines['block-demo-ending_reveal'] = tl;
+      tl.play();
+      <!-- END DEMO-ONLY -->
+    }
+  </script>
+</body>
+</html>

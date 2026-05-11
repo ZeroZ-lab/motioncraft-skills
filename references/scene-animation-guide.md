@@ -21,35 +21,97 @@ AI 从策略词表选择，不自创策略。不使用"我觉得这个动画好�
 
 ```
 text:
-  - title_reveal        # 标题/大字出现
-  - text_highlight       # 关键词高亮
-  - text_typewriter      # 代码/终端逐字出现（code_text 子类型）
-  - text_ending          # 结尾 CTA/总结出现
+  # --- GSAP strategies ---
+  - title_reveal        #engine:gsap     # 标题/大字出现
+  - text_highlight       #engine:gsap     # 关键词高亮
+  - text_typewriter      #engine:gsap     # 代码/终端逐字出现（code_text 子类型）
+  - text_ending          #engine:gsap     # 结尾 CTA/总结出现
+  # --- anime.js strategies ---
+  - blur_reveal          #engine:animejs  # 逐字模糊揭示（来自 React-Bits BlurText）
+  - split_text_reveal    #engine:animejs  # 逐字拆分揭示（来自 React-Bits SplitText）
+  - decrypt_reveal       #engine:animejs  # 逐字解码揭示（来自 React-Bits DecryptedText）
+  - glitch_reveal        #engine:animejs  # 逐字错乱揭示（来自 React-Bits GlitchText）
 
 data:
-  - number_count         # 数字计数动画
-  - data_dashboard       # 多指标仪表盘（stagger + count 组合）
+  # --- GSAP strategies ---
+  - number_count         #engine:gsap     # 数字计数动画
+  - data_dashboard       #engine:gsap     # 多指标仪表盘（stagger + count 组合）
+  # --- anime.js strategies ---
+  - count_up_anim        #engine:animejs  # 弹簧计数动画（来自 React-Bits CountUp）
 
 concept:
-  - diagram_build        # 架构图/层次图逐步构建
-  - concept_layers        # 概念层层叠加展示
-  - card_stack           # 卡片堆叠分类
+  # --- GSAP strategies ---
+  - diagram_build        #engine:gsap     # 架构图/层次图逐步构建
+  - concept_layers        #engine:gsap     # 概念层层叠加展示
+  - card_stack           #engine:gsap     # 卡片堆叠分类
+  # --- anime.js strategies ---
+  - morph_build          #engine:animejs  # SVG 形态变形构建（anime.js morphTo）
+  - line_draw_anime      #engine:animejs  # SVG 路径精确绘制（anime.js createDrawable）
 
 process:
-  - line_draw            # 路径/线条绘制
-  - flow_build           # 流程图/管道逐步构建
-  - pipeline_sequence    # 步骤序列展示
+  # --- GSAP strategies ---
+  - line_draw            #engine:gsap     # 路径/线条绘制（CSS stroke-dashoffset）
+  - flow_build           #engine:gsap     # 流程图/管道逐步构建
+  - pipeline_sequence    #engine:gsap     # 步骤序列展示
 
 comparison:
-  - stagger_compare      # 卡片依次出现对比
-  - grid_swap            # 网格切换（A/B 方案）
-  - before_after         # 前后对比变形
+  # --- GSAP strategies ---
+  - stagger_compare      #engine:gsap     # 卡片依次出现对比
+  - grid_swap            #engine:gsap     # 网格切换（A/B 方案）
+  - before_after         #engine:gsap     # 前后对比变形
+  # --- anime.js strategies ---
+  - morph_compare        #engine:animejs  # SVG 形态前后对比（anime.js morphTo）
 
 mood:
-  - camera_pan           # 视角平移（开场/聚焦）
-  - ending_reveal        # 结尾揭示（品牌/CTA）
-  - atmosphere_build     # 氛围构建（背景 + 环境动画）
+  # --- GSAP strategies ---
+  - camera_pan           #engine:gsap     # 视角平移（开场/聚焦）
+  - ending_reveal        #engine:gsap     # 结尾揭示（品牌/CTA）
+  - atmosphere_build     #engine:gsap     # 氛围构建（背景 + 环境动画）
+  # --- anime.js strategies ---
+  - spring_enter         #engine:animejs  # 弹簧物理入场（anime.js createSpring）
 ```
+
+## 引擎选择规则（How-to Guide）
+
+每个 scene 的动画引擎由以下规则决定。此节是 Guide（方向指引），与策略词表（Reference lookup）Diataxis 分离。
+
+**决策流**:
+
+1. **Step 1: content_type** — 不变，6 种类型之一
+2. **Step 2: animation_strategy** — 不变，从策略词表选择（策略名自带 `#engine:xxx` 标签）
+3. **Step 3: engine_preference** — 当策略词表已携带单一引擎标签时，Step 3 是**确认**而非新决策
+
+**Step 3 规则**:
+```
+规则 1: 策略需要 SVG morph？ → animejs（唯一选择，GSAP MorphSVG 付费）
+规则 2: 策略需要 spring physics？ → animejs（首选）
+  妥协路径 gsap+back.out 仅在 anime.js 未注册于同一 composition 时可用
+规则 3: visual_effect 引用了 React-Bits animejs 组件？ → animejs
+规则 4: 否则 → gsap（默认）
+```
+
+**特殊情况**:
+- `line_draw` 策略（`#engine:gsap`）使用 CSS stroke-dashoffset 覆盖 80%+ 场景。如需精确路径控制，选择 `line_draw_anime`（`#engine:animejs`）使用 createDrawable
+- `atmosphere_build` 策略（`#engine:gsap`）用于 CSS/GSAP 氛围。Three.js（hf-seek）用于 WebGL shader 背景——独立设计迭代处理
+
+**engine_preference 是 advisory per CANON §5**: Build 阶段仅在以下条件可变更：
+1. 首选引擎 Duration Gate 验证失败
+2. Spike 验证显示首选引擎无法正确 seek
+3. animejs-video-guide.md 中记录的技术约束阻止首选方案
+
+**effect_justification 适用所有引擎**: 当 `visual_effect` 字段存在时，无论引擎类型都必须填写 `effect_justification`（CANON §4: Motion Serves Understanding）。
+
+**Feature Parity Matrix**:
+| Capability | GSAP | anime.js | CSS/WAAPI |
+|------------|------|----------|-----------|
+| Timeline composition | Full | Partial | N/A |
+| Text entrance | Standard (opacity/y) | Enhanced (per-char blur/split/decrypt/glitch) | Basic |
+| Number counting | Smooth (power1.out) | Spring-based (createSpring) | N/A |
+| SVG path morphing | MorphSVG (paid) | morphTo (free, basic shapes) | N/A |
+| SVG line drawing | stroke-dashoffset (free) / DrawSVG (paid) | createDrawable (free) | stroke-dashoffset (free) |
+| Spring physics | elastic.out (approximation) | spring() (true physics) | N/A |
+| Stagger orchestration | Full (advanced options) | stagger() (basic) | N/A |
+| HyperFrames seek | seconds | milliseconds (v3) / TBD (v4) | CSS animation play-state |
 
 ## 多类型场景分类规则
 
@@ -121,6 +183,8 @@ tl.to({}, { duration: 0.5 });
   - 标题和副标题同时出现（应先标题后副标题，错开 0.2-0.3s）
   - 出现后立即开始下一个动画（必须 hold ≥ 0.5s 让观众阅读）
 
+**Block Reference**: [title_reveal demo](../scene-blocks/text/title_reveal.html) | [Integration Guide](../scene-blocks/text/title_reveal.md) | aliases: text_ending
+
 #### text_highlight
 
 - **用途**: 关键词高亮，强调已有文字中的重点
@@ -149,6 +213,8 @@ tl.from('.text-content', {
 - **常见错误**:
   - 一次高亮所有关键词（应 stagger 逐个高亮，间隔 0.15-0.2s）
   - 高亮颜色与主题不协调（高亮色应来自调色板，不随意取色）
+
+**Block Reference**: [text_highlight demo](../scene-blocks/text/text_highlight.html) | [Integration Guide](../scene-blocks/text/text_highlight.md)
 
 #### text_typewriter（code_text 子类型）
 
@@ -185,6 +251,8 @@ gsap.to(cursor, { opacity: 0, duration: 0.5, repeat: -1, yoyo: true });
   - 逐字速度太快（< 30ms/char 观众无法跟随）
   - 一次性显示所有代码（应逐行出现，行间 stagger 0.3-0.5s）
 
+**Block Reference**: [text_typewriter demo](../scene-blocks/text/text_typewriter.html) | [Integration Guide](../scene-blocks/text/text_typewriter.md)
+
 #### text_ending
 
 - **用途**: 结尾 CTA 或总结文字出现
@@ -212,6 +280,155 @@ tl.from('.ending-title', {
 - **常见错误**:
   - CTA 按钮与总结文字同时出现（总结文字先行，CTA 延后 0.2-0.3s）
   - 使用线性缓动（CTA 应使用弹性缓动吸引注意力）
+
+**Block Reference**: title_reveal block (text_ending alias) — 见 [title_reveal Integration Guide](../scene-blocks/text/title_reveal.md) | [demo](../scene-blocks/text/title_reveal.html)
+
+#### blur_reveal #engine:animejs
+
+- **用途**: 逐字模糊揭示，用于强调关键词的转换过程。每个字符从模糊→清晰，强调"从不确定到确定"的语义
+- **Primary Pattern**: P14 Blur Reveal
+- **推荐 Easing**: easeOutExpo（anime.js）
+- **参数范围**:
+  - duration: 0.6-1.0s per character group
+  - stagger: 0.05-0.1s per character
+  - blur range: 8-12px → 0px
+  - y offset: 15-25px → 0
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// blur_reveal example — anime.js
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.title-char', {
+  opacity: [0, 1],
+  filter: ['blur(10px)', 'blur(0px)'],
+  translateY: [20, 0],
+  duration: 0.8,
+  stagger: 0.05,
+  ease: 'easeOutExpo'
+});
+// HyperFrames hfAnime registration
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "逐字模糊揭示强调'新方法取代旧方法'的转换过程——模糊→清晰映射不确定→确定"
+- **常见错误**:
+  - 对所有文字都用 blur_reveal（只对关键词用，其余静态显示）
+  - stagger 过快（< 0.03s/char 观众无法感知逐字过程）
+  - blur 值过大（> 12px 字符完全不可辨识，失去揭示感）
+
+**Block Reference**: Phase 2 待添加（anime.js blocks 等 dual-engine Spike 验证后创建）
+
+#### split_text_reveal #engine:animejs
+
+- **用途**: 逐字拆分揭示，字符从分散位置汇聚到正确位置。强调"从混乱到有序"的语义
+- **Primary Pattern**: P15 Split Text Reveal
+- **推荐 Easing**: easeOutExpo（anime.js）
+- **参数范围**:
+  - duration: 0.6-1.0s per character group
+  - stagger: 0.04-0.08s per character
+  - x/y scatter: ±30-50px → 0
+  - rotation scatter: ±15-30deg → 0
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// split_text_reveal example — anime.js
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.title-char', {
+  opacity: [0, 1],
+  translateX: [30, 0],
+  translateY: [-15, 0],
+  rotate: [15, 0],
+  duration: 0.8,
+  stagger: 0.05,
+  ease: 'easeOutExpo'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "逐字拆分揭示强调'从碎片化信息到完整理解'的汇聚过程——散落→归位映射混乱→有序"
+- **常见错误**:
+  - scatter 距离过大（> 60px 字符脱离画面，观众无法跟踪）
+  - 与 blur_reveal 混用（同一 scene 不要混用两种揭示策略）
+
+**Block Reference**: Phase 2 待添加
+
+#### decrypt_reveal #engine:animejs
+
+- **用途**: 逐字解码揭示，字符从随机字符逐步替换为正确字符。强调"信息解锁/解密"的语义
+- **Primary Pattern**: (React-Bits DecryptedText 提取)
+- **推荐 Easing**: linear（解码是匀速过程，模拟真实解密节奏）
+- **参数范围**:
+  - duration: 0.5-1.5s per character group
+  - stagger: 0.03-0.05s per character
+  - iteration count: 2-4 次随机替换后定稿
+  - random character set: alphanumeric + symbols
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// decrypt_reveal example — anime.js
+// 字符替换逻辑需要手动实现（React-Bits 提取）
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.decrypt-char', {
+  opacity: [0, 1],
+  duration: 0.6,
+  stagger: 0.04,
+  ease: 'linear',
+  // 字符替换在 onUpdate 中手动处理
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "逐字解码揭示强调'加密数据逐步解锁'的过程——乱码→正确映射隐藏→揭示"
+- **常见错误**:
+  - iteration 次数过多（> 5 次观众无法感知定稿字符的出现）
+  - 解码速度与叙事不匹配（快节奏 → 0.5s，讲解节奏 → 1.5s）
+
+**Block Reference**: Phase 2 待添加
+
+#### glitch_reveal #engine:animejs
+
+- **用途**: 逐字错乱揭示，字符短暂出现随机位移/颜色/透明度抖动后稳定。强调"不稳定、破坏、技术故障"的语义
+- **Primary Pattern**: (React-Bits GlitchText 提取)
+- **推荐 Easing**: easeOutExpo（抖动→稳定）
+- **参数范围**:
+  - duration: 0.4-0.8s per character
+  - stagger: 0.03-0.06s per character
+  - glitch amplitude: translate ±5-10px, rotate ±3-5deg, color shift ±20%
+  - glitch iteration: 2-3 次抖动后稳定
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// glitch_reveal example — anime.js
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.glitch-char', {
+  opacity: [0, 1],
+  translateX: [8, 0],
+  skewX: [5, 0],
+  duration: 0.6,
+  stagger: 0.04,
+  ease: 'easeOutExpo'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "逐字错乱揭示强调'系统不稳定/技术正在崩溃'——抖动→稳定映射混乱→恢复"
+- **常见错误**:
+  - glitch 幅度过大（> 15px 抖动变成不可阅读，失去揭示感）
+  - 对温和内容使用 glitch（glitch 仅用于表达不稳定/故障/破坏语义）
+
+**Block Reference**: Phase 2 待添加
 
 ### 强制规则：文字停留
 
@@ -273,6 +490,8 @@ tl.from('.metric-label', {
   - 计数太快（< 0.8s 观众无法感知数字变化过程）
   - 数字没有格式化（大数字应加千分位逗号或单位，如 12,847 / 1.2M）
 
+**Block Reference**: [number_count demo](../scene-blocks/data/number_count.html) | [Integration Guide](../scene-blocks/data/number_count.md)
+
 #### data_dashboard
 
 - **用途**: 多指标仪表盘，同时展示 3-5 个数据指标
@@ -313,6 +532,42 @@ counters.forEach((el, i) => {
 - **常见错误**:
   - 超过 5 个指标同时展示（超过则分批或拆 scene）
   - 卡片和数字同时开始（应先卡片入场，后数字计数）
+
+**Block Reference**: number_count block (data_dashboard alias) — 见 [number_count Integration Guide](../scene-blocks/data/number_count.md) | [demo](../scene-blocks/data/number_count.html)
+
+#### count_up_anim #engine:animejs
+
+- **用途**: 弹簧计数动画，数字以弹簧物理运动到目标值。弹簧效果让数字有"活力感"和"超调回弹"
+- **Primary Pattern**: P19 Count Up Spring
+- **推荐 Easing**: anime.js spring（stiffness: 200, damping: 15）
+- **参数范围**:
+  - spring_stiffness: 100-500, default 200
+  - spring_damping: 5-30, default 15
+  - 弹簧让数字短暂超过目标值后回弹——传达增长活力
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// count_up_anim example — anime.js spring
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.metric-value', {
+  innerHTML: [0, 12847],
+  round: true,
+  spring: { stiffness: 200, damping: 15 },
+  duration: 0, // spring auto-calculates duration
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "弹簧计数传达'增长活力'——数字超调后回弹映射快速增长势头"
+- **常见错误**:
+  - spring stiffness 过高（> 500 数字震荡剧烈，不可读）
+  - spring damping 过低（< 5 回弹次数过多，观众困惑）
+  - 未使用 stretch() 控制 duration（spring auto-calculates，需 stretch() 强制时长对齐 storyboard）
+
+**Block Reference**: Phase 2 待添加
 
 ### 常见错误汇总
 
@@ -366,6 +621,8 @@ tl.from('.layer-1', {
   - 一次性展示所有层（应逐层构建，每层有 hold 时间）
   - 层间没有 overlap（层间应有 0.2-0.3s overlap 保持节奏流畅）
 
+**Block Reference**: [diagram_build demo](../scene-blocks/concept/diagram_build.html) | [Integration Guide](../scene-blocks/concept/diagram_build.md) | aliases: concept_layers, card_stack
+
 #### concept_layers
 
 - **用途**: 概念层层叠加展示，说明概念的深度或递进关系
@@ -394,6 +651,8 @@ layers.forEach((layer, i) => {
   - 所有层同时出现（应逐层叠加，每层间隔 0.2-0.3s）
   - 层间无视觉区分（每层应有不同的透明度或色彩区分）
 
+**Block Reference**: diagram_build block (concept_layers alias) — 见 [diagram_build Integration Guide](../scene-blocks/concept/diagram_build.md)
+
 #### card_stack
 
 - **用途**: 卡片堆叠分类，展示方案对比、版本迭代或概念分组
@@ -421,6 +680,72 @@ cards.forEach((card, i) => {
 - **常见错误**:
   - 卡片数量超过 4（堆叠超过 4 张会遮挡内容，减少或分组）
   - rotation 过大（> 3deg 会显得杂乱）
+
+**Block Reference**: diagram_build block (card_stack alias) — 见 [diagram_build Integration Guide](../scene-blocks/concept/diagram_build.md)
+
+#### morph_build #engine:animejs
+
+- **用途**: SVG 形态变形构建，元素从一种形状变形到另一种形状。强调"概念转换/形态变化"的语义——形态变形比 fade 切换更能表达"转化关系"
+- **Primary Pattern**: P16 Morph Build
+- **推荐 Easing**: easeInOutQuad（anime.js）
+- **参数范围**:
+  - duration: 0.8-1.5s
+  - morph_source: 自然语言形状描述（设计师意图，build 阶段翻译为 SVG）
+  - morph_target: 自然语言形状描述（设计师意图，build 阶段翻译为 SVG）
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// morph_build example — anime.js SVG morphTo
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.morph-element', {
+  morphTo: 'M50,5 L95,5 Q95,5 95,50 Q95,95 50,95 Q5,95 5,50 Q5,5 50,5 Z',
+  duration: 1.0,
+  ease: 'easeInOutQuad'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "形态变形揭示'圆形组织 → 方形流程'的转换关系——形变映射概念转型"
+- **常见错误**:
+  - morph source 和 target 节点数不匹配（path morph 要求两条 path 的节点数相同或兼容，否则需要手动补点）
+  - morph 过快（< 0.8s 观众无法感知形变过程）
+
+**Block Reference**: Phase 2 待添加
+
+#### line_draw_anime #engine:animejs
+
+- **用途**: SVG 路径精确绘制，使用 anime.js createDrawable 实现比 CSS stroke-dashoffset 更精确的路径绘制控制
+- **Primary Pattern**: P20 Path Draw
+- **推荐 Easing**: easeInOutSine（anime.js）
+- **参数范围**:
+  - duration: 0.8-1.5s
+  - path length: 与 SVG path 总长度匹配
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// line_draw_anime example — anime.js createDrawable
+const drawable = anime.svg.createDrawable('.flow-path');
+const tl = anime.createTimeline({ autoplay: false });
+tl.add(drawable, {
+  drawProgress: [0, 1],
+  duration: 1.0,
+  ease: 'easeInOutSine'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "路径精确绘制揭示'数据流向目标'的过程——逐步绘制映射方向指引"
+- **常见错误**:
+  - 未使用 createDrawable 初始化（anime.js SVG 绘制需要先 createDrawable 声明）
+  - 与 GSAP line_draw 混用同一 SVG（同一 composition 中路径绘制应统一使用一种引擎）
+
+**Block Reference**: Phase 2 待添加
 
 ### 常见错误汇总
 
@@ -463,6 +788,9 @@ tl.from('.flow-path', {
   - 线条绘制速度不一致（同一条路径应匀速绘制）
   - 没有方向指示（线条应有箭头或渐变表示方向）
 
+**Block Reference**: [line_draw demo](../scene-blocks/process/line_draw.html) | [Integration Guide](../scene-blocks/process/line_draw.md) | aliases: flow_build, pipeline_sequence
+**Note**: Block demos 使用 CSS stroke-dashoffset（免费），drawSVG 为付费可选升级路径
+
 #### flow_build
 
 - **用途**: 流程图/管道逐步构建，先出节点再画连接
@@ -488,6 +816,8 @@ tl.from('.flow-connector', {
 - **常见错误**:
   - 节点和连线同时出现（应先节点后连线，保持因果逻辑）
   - 没有流程方向（箭头或连线方向必须明确）
+
+**Block Reference**: line_draw block (flow_build alias) — 见 [line_draw Integration Guide](../scene-blocks/process/line_draw.md)
 
 #### pipeline_sequence
 
@@ -525,6 +855,8 @@ steps.forEach((step, i) => {
 - **常见错误**:
   - 所有步骤同时出现（必须序列展示，每步间隔 ≥ 0.3s）
   - 没有方向性元素（步骤间必须有箭头/连线表示流程方向）
+
+**Block Reference**: line_draw block (pipeline_sequence alias) — 见 [line_draw Integration Guide](../scene-blocks/process/line_draw.md)
 
 ### 常见错误汇总
 
@@ -573,6 +905,8 @@ tl.from('.compare-b .card', {
   - A/B 两侧同时出现（应先 A 后 B 或交错，间隔 ≥ 0.3s）
   - 对比项超过 7 个（单侧超过 5-7 项应分组或拆 scene）
 
+**Block Reference**: [stagger_compare demo](../scene-blocks/comparison/stagger_compare.html) | [Integration Guide](../scene-blocks/comparison/stagger_compare.md) | aliases: grid_swap, before_after
+
 #### grid_swap
 
 - **用途**: 网格切换，从 A 方案视图切换到 B 方案视图
@@ -601,6 +935,8 @@ tl.to('.grid-a .grid-item', {
   - 退出和进入同时发生（必须先完全退出再进入，间隔 ≥ 0.1s）
   - 切换速度太慢（总切换 duration ≤ 1.0s，避免观众等待）
 
+**Block Reference**: stagger_compare block (grid_swap alias) — 见 [stagger_compare Integration Guide](../scene-blocks/comparison/stagger_compare.md)
+
 #### before_after
 
 - **用途**: 前后对比变形，从状态 A 变形到状态 B
@@ -627,6 +963,41 @@ tl.to('.state-a', {
 - **常见错误**:
   - A 和 B 同时显示（变形应有明确的 A → B 过渡，不同时显示）
   - 变形过程无中间态（应有一个短暂的混合态让过渡自然）
+
+**Block Reference**: stagger_compare block (before_after alias) — 见 [stagger_compare Integration Guide](../scene-blocks/comparison/stagger_compare.md)
+
+#### morph_compare #engine:animejs
+
+- **用途**: SVG 形态前后对比，元素从"状态 A"的形状变形到"状态 B"的形状。比 before_after 的 scale+opacity 更能表达"本质性差异"
+- **Primary Pattern**: P17 Morph Compare
+- **推荐 Easing**: easeInOutQuad（anime.js）
+- **参数范围**:
+  - duration: 0.8-1.5s
+  - morph_source: 自然语言形状描述（状态 A 形状）
+  - morph_target: 自然语言形状描述（状态 B 形状）
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// morph_compare example — anime.js SVG morphTo
+const tl = anime.createTimeline({ autoplay: false });
+// 状态 A → 状态 B 形变
+tl.add('.compare-element', {
+  morphTo: 'M50,5 L95,5 Q95,5 95,50 Q95,95 50,95 Q5,95 5,50 Q5,5 50,5 Z',
+  duration: 1.2,
+  ease: 'easeInOutQuad'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "形态变形对比揭示'旧架构圆形 → 新架构方形'的本质差异——形变映射结构性变化"
+- **常见错误**:
+  - morph source 和 target 形状过于相似（形变看不出差异 = 不适合用 morph_compare）
+  - 未标注 morph_source 和 morph_target 的语义含义（animation_intent 中必须注明"什么→什么"）
+
+**Block Reference**: Phase 2 待添加
 
 ### 常见错误汇总
 
@@ -675,6 +1046,8 @@ tl.to('.viewport', {
   - 平移距离过大（画面内容不应移出可视区域）
   - 平移速度不均匀（使用缓动保持流畅）
 
+**Block Reference**: [camera_pan demo](../scene-blocks/mood/camera_pan.html) | [Integration Guide](../scene-blocks/mood/camera_pan.md) | aliases: atmosphere_build
+
 #### ending_reveal
 
 - **用途**: 结尾揭示，品牌/CTA 的仪式感展示
@@ -709,6 +1082,8 @@ tl.to('.scene-content', {
   - 所有元素同时出现（必须分层：先淡出旧内容 → 标题 → 副标题 → CTA）
   - CTA 没有弹性效果（CTA 必须使用 back.out 弹性缓动吸引点击）
 
+**Block Reference**: [ending_reveal demo](../scene-blocks/mood/ending_reveal.html) | [Integration Guide](../scene-blocks/mood/ending_reveal.md)
+
 #### atmosphere_build
 
 - **用途**: 氛围构建，通过背景渐变和微弱的环境动画营造情绪
@@ -738,6 +1113,45 @@ gsap.to('.particle', {
 - **常见错误**:
   - 过度动画（mood 是氛围，不是奇观——动画幅度要克制）
   - 环境动画过于抢眼（微粒/形状应低 opacity、慢速度，不抢焦点）
+
+**Block Reference**: camera_pan block (atmosphere_build alias) — 见 [camera_pan Integration Guide](../scene-blocks/mood/camera_pan.md)
+
+#### spring_enter #engine:animejs
+
+- **用途**: 弹簧物理入场，元素以真实的弹簧物理运动（超调+回弹）入场。弹簧效果传达"活力、主动、新鲜"的语义——比 GSAP back.out 更自然
+- **Primary Pattern**: P18 Spring Enter
+- **推荐 Easing**: anime.js spring（stiffness: 200, damping: 15）
+- **参数范围**:
+  - spring_stiffness: 100-500, default 200（值越高弹簧越硬，回弹越快）
+  - spring_damping: 5-30, default 15（值越高阻尼越大，回弹越少）
+  - 高 stiffness + 低 damping = 活力弹性入场
+  - 低 stiffness + 高 damping = 温和弹性入场
+- **HyperFrames 集成**:
+  - anime.js timeline 使用 `autoplay: false` 创建
+  - 注册到 `window.__hfAnime`
+  - storyboard `engine_preference: animejs`
+- **代码模板**:
+```javascript
+// spring_enter example — anime.js spring physics
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.hero-element', {
+  translateX: [50, 0],
+  translateY: [30, 0],
+  opacity: [0, 1],
+  spring: { stiffness: 200, damping: 15 },
+  duration: 0, // spring auto-calculates duration
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+- **effect_justification 示例**: "弹簧入场传达'活力与主动性'——超调+回弹映射主动出击、充满能量"
+- **常见错误**:
+  - stiffness 过高（> 500 元素剧烈震荡，不可读）
+  - damping 过低（< 5 回弹次数过多，观众困惑）
+  - 未使用 stretch() 控制 duration（spring auto-calculates duration，必须用 stretch() 对齐 storyboard 时长）
+  - 对所有元素都用弹簧入场（只对 hero/核心元素用弹簧，其余用标准入场）
+
+**Block Reference**: Phase 2 待添加
 
 ### 常见错误汇总
 

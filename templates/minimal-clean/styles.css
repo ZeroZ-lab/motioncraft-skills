@@ -1,0 +1,107 @@
+/* Minimal Clean — MotionCraft Template Styles */
+
+/*
+ * Design tokens (--mc-* convention)
+ * ─────────────────────────────────
+ * 每个变量都带 fallback，方便无 CSS 变量支持时的降级。
+ * 修改这些值即可全局换肤，不需要逐条改 CSS。
+ */
+
+:root {
+  /* 背景 & 文字 */
+  --mc-bg: #ffffff;                /* 主背景 — 白色 */
+  --mc-bg-alt: #f5f5f5;           /* 交替背景 — 极浅灰 */
+  --mc-text: #1a1a1a;             /* 主文字 — 近黑 */
+  --mc-text-muted: #6b7280;       /* 辅助文字 — 中灰 */
+
+  /* 主色 & 强调色 */
+  --mc-primary: #2563eb;          /* 主色 — 蓝 600 */
+  --mc-accent: #1d4ed8;           /* 强调色 — 蓝 700 */
+
+  /* 边框 */
+  --mc-border: #e5e7eb;           /* 边框 — 浅灰 */
+
+  /* 字体 */
+  --mc-font-primary: 'Inter', sans-serif;
+  --mc-font-secondary: 'Inter', sans-serif;
+
+  /* 尺度 */
+  --mc-heading-size: 2.25rem;     /* 标题字号 */
+  --mc-body-size: 1rem;           /* 正文字号 */
+
+  /* 间距 */
+  --mc-spacing-sm: 0.5rem;
+  --mc-spacing-md: 1rem;
+  --mc-spacing-lg: 1.5rem;
+
+  /* 动效 */
+  --mc-duration-default: 0.6;
+  --mc-easing-default: 'power2.out';
+  --mc-enter-type: 'from-hidden';
+  --mc-exit-type: 'to-hidden';
+}
+
+/* ── Light theme base styles ── */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--mc-bg, #ffffff);
+  color: var(--mc-text, #1a1a1a);
+  font-family: var(--mc-font-primary, 'Inter', sans-serif);
+  font-size: var(--mc-body-size, 1rem);
+  line-height: 1.6;
+}
+
+.video-container {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  background: var(--mc-bg, #ffffff);
+  overflow: hidden;
+}
+
+.scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+/* Minimal clean heading */
+.mc-heading {
+  font-size: var(--mc-heading-size, 2.25rem);
+  font-weight: 700;
+  color: var(--mc-text, #1a1a1a);
+  letter-spacing: -0.02em;
+}
+
+/* Minimal clean body text */
+.mc-body {
+  font-size: var(--mc-body-size, 1rem);
+  color: var(--mc-text-muted, #6b7280);
+  line-height: 1.6;
+}
+
+/* Minimal clean accent element */
+.mc-accent {
+  color: var(--mc-primary, #2563eb);
+}
+
+/* Minimal clean card */
+.mc-card {
+  padding: var(--mc-spacing-lg, 1.5rem);
+  background: var(--mc-bg-alt, #f5f5f5);
+  border: 1px solid var(--mc-border, #e5e7eb);
+  border-radius: 8px;
+}

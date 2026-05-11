@@ -1,6 +1,6 @@
 # MotionCraft Skills
 
-> 宪法 + 7 技能 + 7 命令 + 6 角色 = Web 动画视频生产技能套件。
+> 宪法 + 7 技能 + 7 命令 + 6 角色 + Scene Block Library + Template Scaffolding = Web 动画视频生产技能套件。
 
 ## 如果你是一个 AI Agent
 
@@ -44,7 +44,8 @@ motioncraft-skills/
 │
 ├── commands/                7 命令入口
 ├── agents/                  6 角色
-└── references/              参考资料
+├── templates/               4 starter 模板（dark-tech, minimal-clean, bold-editorial, data-visualization）
+└── references/              参考资料 + Scene Block Library
 ```
 
 ## 技能按阶段分组
@@ -66,18 +67,19 @@ verify/    → render-qa（渲染质检）
 | `/mc-script` | design-script-beats | 叙事节奏 | `docs/video/<name>/03-script-beats.md` |
 | `/mc-storyboard` | design-storyboard | 分镜场景 | `docs/video/<name>/04-storyboard.md` | ✅ Checkpoint 2 |
 | `/mc-styleframes` | design-styleframes | 静态关键帧 | `docs/video/<name>/05-styleframes.md` |
-| `/mc-compose` | build-web-motion | Web 动画工程 | `project/` |
+| `/mc-compose` | build-web-motion | Web 动画工程 | `project/` | ✅ Checkpoint 0（模板选择） |
 | `/mc-render-qa` | verify-render-qa | QA 报告 + 导出 | `docs/video/<name>/06-qa-report.md` | ✅ Checkpoint 3 |
 
-## 3 个人工确认 Checkpoint
+## 4 个人工确认 Checkpoint
 
 | Checkpoint | 位置 | 审查角色 | 问题 |
 |-----------|------|---------|------|
+| 0 | 模板选择 | 用户 | 选择哪个模板？推荐是否合适？ |
 | 1 | 标题封面确认 | title-cover-scout | 这个标题值得点吗？封面一眼能看懂吗？视频承诺清楚吗？ |
 | 2 | Storyboard 确认 | storyboard-reviewer + styleframe-reviewer | 每一幕有必要吗？画面能承载信息吗？节奏合理吗？ |
 | 3 | Render QA 确认 | render-qa-auditor | 能正常渲染吗？风格符合预期吗？可以发布吗？ |
 
-Agent 可以自动执行中间步骤，但这 3 个节点必须保留人工判断。
+Agent 可以自动执行中间步骤，但这 4 个节点必须保留人工判断。
 
 ## 文档产出链
 
@@ -135,4 +137,14 @@ output/
 - 不能在技能间重复内容——用引用代替
 - 不能在技能中放松宪法条款
 - 不能在 storyboard 确认后重新发明场景
-- 不能跳过 3 个人工确认 checkpoint
+- 不能跳过 4 个人工确认 checkpoint（含模板选择）
+
+## Scene Block Library
+
+Scene Block Library 提供 8 个 GSAP 结构模板，覆盖 17 个 GSAP 策略（含别名映射）。anime.js blocks 等双引擎 Spike 验证后在 Phase 2 添加。
+
+**Block 定位**: demo + integration spec（非 copy-paste source）。Agent 读 block.md 理解模式，在模板项目中写新代码。
+
+**查找方式**: `references/scene-blocks/MANIFEST.json` 提供 animation_strategy → block file + engine 的结构化映射。
+
+**模板选择**: `/mc-compose` Phase 0 通过 brief 信号推荐模板 + 人类 override 确认。见 `templates/TEMPLATE-GUIDE.md`。

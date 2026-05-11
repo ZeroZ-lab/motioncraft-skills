@@ -1,0 +1,291 @@
+<!-- BLOCK: text_typewriter | engine: gsap | aliases: none -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Demo: text_typewriter</title>
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN with SRI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* === MotionCraft CSS Variable Convention (--mc-*) ===
+     *
+     * Core colors: --mc-bg, --mc-bg-alt, --mc-text, --mc-text-muted, --mc-primary, --mc-accent, --mc-border
+     * Fonts: --mc-font-primary, --mc-font-secondary, --mc-heading-size, --mc-body-size
+     * Spacing: --mc-spacing-sm, --mc-spacing-md, --mc-spacing-lg
+     * Motion: --mc-duration-default, --mc-easing-default, --mc-enter-type, --mc-exit-type
+     *
+     * Rules:
+     * - Each :root variable must have a fallback value (var(--mc-bg, #0a0a1a))
+     * - Block demo uses default values; Template overrides default values
+     * - Custom templates must define all 16+ variables
+     */
+    :root {
+      --mc-bg: #0a0a1a;
+      --mc-bg-alt: #1a1a2e;
+      --mc-text: #e0e0e0;
+      --mc-text-muted: #6b6b7b;
+      --mc-primary: #00ff88;
+      --mc-accent: #00cc6a;
+      --mc-border: #2a2a3a;
+      --mc-font-primary: 'Inter', sans-serif;
+      --mc-font-secondary: 'JetBrains Mono', monospace;
+      --mc-heading-size: 2.5rem;
+      --mc-body-size: 1rem;
+      --mc-spacing-sm: 0.5rem;
+      --mc-spacing-md: 1rem;
+      --mc-spacing-lg: 2rem;
+      --mc-duration-default: 0.8;
+      --mc-easing-default: power2.out;
+      --mc-enter-type: from-hidden;
+      --mc-exit-type: to-hidden;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--mc-bg, #0a0a1a);
+      color: var(--mc-text, #e0e0e0);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .scene {
+      width: 1920px;
+      max-width: 100vw;
+      height: 1080px;
+      max-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--mc-spacing-lg, 2rem);
+    }
+
+    .code-block {
+      background-color: var(--mc-bg-alt, #1a1a2e);
+      border: 1px solid var(--mc-border, #2a2a3a);
+      border-radius: 8px;
+      padding: var(--mc-spacing-md, 1rem) var(--mc-spacing-lg, 2rem);
+      font-family: var(--mc-font-secondary, 'JetBrains Mono', monospace);
+      font-size: var(--mc-body-size, 1rem);
+      line-height: 1.6;
+      width: 80%;
+      max-width: 900px;
+      position: relative;
+      /* CSS state model: final visible state */
+      opacity: 1;
+    }
+
+    .code-block::before {
+      content: 'terminal';
+      position: absolute;
+      top: 0;
+      left: var(--mc-spacing-md, 1rem);
+      transform: translateY(-50%);
+      background-color: var(--mc-bg-alt, #1a1a2e);
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--mc-text-muted, #6b6b7b);
+      letter-spacing: 0.05em;
+    }
+
+    .code-line {
+      color: var(--mc-text, #e0e0e0);
+      min-height: 1.6em;
+      /* CSS state model: final visible state — code text visible */
+      opacity: 1;
+    }
+
+    .code-line .char {
+      /* Characters are visible in final state (CSS state model) */
+      opacity: 1;
+    }
+
+    .code-line .char.syntax-keyword {
+      color: var(--mc-primary, #00ff88);
+      opacity: 1;
+    }
+
+    .code-line .char.syntax-string {
+      color: var(--mc-accent, #00cc6a);
+      opacity: 1;
+    }
+
+    .code-line .char.syntax-comment {
+      color: var(--mc-text-muted, #6b6b7b);
+      opacity: 1;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background-color: var(--mc-primary, #00ff88);
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      /* CSS state model: cursor blinking in final state */
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene-demo">
+    <div class="code-block">
+      <div class="code-line">
+        <span class="char syntax-keyword">c</span><span class="char syntax-keyword">o</span><span class="char syntax-keyword">n</span><span class="char syntax-keyword">s</span><span class="char syntax-keyword">t</span><span class="char"> </span><span class="char">a</span><span class="char">p</span><span class="char">p</span><span class="char"> </span><span class="char">=</span><span class="char"> </span><span class="char syntax-keyword">e</span><span class="char syntax-keyword">x</span><span class="char syntax-keyword">p</span><span class="char syntax-keyword">r</span><span class="char syntax-keyword">e</span><span class="char syntax-keyword">s</span><span class="char syntax-keyword">s</span><span class="char syntax-keyword">(</span><span class="char syntax-keyword">)</span><span class="char syntax-keyword">;</span>
+        <span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ?static=true XSS-safe parsing: only check key existence, never use values in DOM
+    const isStatic = new URLSearchParams(window.location.search).has('static');
+
+    if (isStatic) {
+      // Static mode: skip animation, show final state only
+      // CSS already defines final visible state (chars visible, cursor blinking)
+      // No timeline creation needed
+    } else {
+      // text_typewriter — code_text sub-type
+      // Easing: none (linear, uniform per-character — simulates real input rhythm)
+      // Duration: ~50ms per char, cursor blink 0.5s
+      // Syntax highlighting as secondary animation: keyword→blue, string→green, comment→gray
+
+      const codeText = 'const app = express();';
+      const chars = codeText.split('');
+      const container = document.querySelector('.code-line');
+      const cursor = document.querySelector('.cursor');
+
+      // Remove all pre-existing .char spans (CSS state model placeholders)
+      const existingChars = container.querySelectorAll('.char');
+      existingChars.forEach(el => el.remove());
+
+      // Syntax classification rules
+      const KEYWORDS = ['const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'class', 'import', 'export', 'express'];
+      const STRING_DELIMITERS = ['"', "'", '`'];
+      const COMMENT_DELIMITERS = ['//', '/*', '*/'];
+
+      function classifyChar(char, index, fullText) {
+        // Check if char is inside a keyword
+        for (const kw of KEYWORDS) {
+          const start = fullText.indexOf(kw);
+          if (start !== -1 && index >= start && index < start + kw.length) {
+            return 'syntax-keyword';
+          }
+        }
+        // Check if char is inside a string (simplified: single-line strings)
+        for (const delim of STRING_DELIMITERS) {
+          const openIdx = fullText.indexOf(delim);
+          if (openIdx !== -1) {
+            const closeIdx = fullText.indexOf(delim, openIdx + 1);
+            if (closeIdx !== -1 && index > openIdx && index < closeIdx) {
+              return 'syntax-string';
+            }
+          }
+        }
+        // Check if char is inside a comment
+        const commentStart = fullText.indexOf('//');
+        if (commentStart !== -1 && index >= commentStart) {
+          return 'syntax-comment';
+        }
+        const blockStart = fullText.indexOf('/*');
+        const blockEnd = fullText.indexOf('*/');
+        if (blockStart !== -1 && blockEnd !== -1 && index >= blockStart && index <= blockEnd + 1) {
+          return 'syntax-comment';
+        }
+        return '';
+      }
+
+      // Build the GSAP timeline: characters appear one by one
+      const tl = gsap.timeline({ paused: true });
+
+      // Track keyword spans for secondary syntax highlighting animation
+      const keywordSpans = [];
+      const stringSpans = [];
+      const commentSpans = [];
+
+      chars.forEach((char, i) => {
+        tl.add(() => {
+          const span = document.createElement('span');
+          span.textContent = char;
+          span.classList.add('char');
+
+          // All chars initially appear in base text color
+          // Syntax highlighting will be applied as a secondary animation
+          const syntaxClass = classifyChar(char, i, codeText);
+          if (syntaxClass === 'syntax-keyword') {
+            keywordSpans.push(span);
+          } else if (syntaxClass === 'syntax-string') {
+            stringSpans.push(span);
+          } else if (syntaxClass === 'syntax-comment') {
+            commentSpans.push(span);
+          }
+
+          container.insertBefore(span, cursor);
+        }, i * 0.05);
+      });
+
+      // Secondary animation: syntax highlighting color change
+      // Keyword chars change to --mc-primary color
+      keywordSpans.forEach((span, i) => {
+        tl.to(span, {
+          color: 'var(--mc-primary, #00ff88)',
+          duration: 0.25,
+          ease: 'none'
+        }, 0.05 * chars.length + 0.1 + i * 0.02);
+      });
+
+      // String chars change to --mc-accent color
+      stringSpans.forEach((span, i) => {
+        tl.to(span, {
+          color: 'var(--mc-accent, #00cc6a)',
+          duration: 0.25,
+          ease: 'none'
+        }, 0.05 * chars.length + 0.1 + i * 0.02);
+      });
+
+      // Comment chars change to --mc-text-muted color
+      commentSpans.forEach((span, i) => {
+        tl.to(span, {
+          color: 'var(--mc-text-muted, #6b6b7b)',
+          duration: 0.25,
+          ease: 'none'
+        }, 0.05 * chars.length + 0.1 + i * 0.02);
+      });
+
+      // Hold >= 0.5s after typewriter complete (mandatory text dwell rule)
+      tl.to({}, { duration: 0.5 });
+
+      <!-- DEMO-ONLY -->
+      window.__timelines = window.__timelines || {};
+      window.__timelines['block-demo-text_typewriter'] = tl;
+      tl.play();
+      <!-- END DEMO-ONLY -->
+
+      // Cursor blink: 0.5s interval, infinite loop
+      gsap.to(cursor, {
+        opacity: 0,
+        duration: 0.5,
+        repeat: -1,
+        yoyo: true,
+        ease: 'steps(1)'
+      });
+    }
+  </script>
+</body>
+</html>

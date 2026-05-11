@@ -1,0 +1,161 @@
+<!-- BLOCK: text_highlight | engine: gsap | aliases: none -->
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Demo: text_highlight</title>
+
+  <!-- Google Fonts preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP CDN with SRI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+          integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* === MotionCraft CSS Variable Convention (--mc-*) ===
+     *
+     * Core colors: --mc-bg, --mc-bg-alt, --mc-text, --mc-text-muted, --mc-primary, --mc-accent, --mc-border
+     * Fonts: --mc-font-primary, --mc-font-secondary, --mc-heading-size, --mc-body-size
+     * Spacing: --mc-spacing-sm, --mc-spacing-md, --mc-spacing-lg
+     * Motion: --mc-duration-default, --mc-easing-default, --mc-enter-type, --mc-exit-type
+     *
+     * Rules:
+     * - Each :root variable must have a fallback value (var(--mc-bg, #0a0a1a))
+     * - Block demo uses default values; Template overrides default values
+     * - Custom templates must define all 16+ variables
+     */
+    :root {
+      --mc-bg: #0a0a1a;
+      --mc-bg-alt: #1a1a2e;
+      --mc-text: #e0e0e0;
+      --mc-text-muted: #6b6b7b;
+      --mc-primary: #00ff88;
+      --mc-accent: #00cc6a;
+      --mc-border: #2a2a3a;
+      --mc-font-primary: 'Inter', sans-serif;
+      --mc-font-secondary: 'JetBrains Mono', monospace;
+      --mc-heading-size: 2.5rem;
+      --mc-body-size: 1rem;
+      --mc-spacing-sm: 0.5rem;
+      --mc-spacing-md: 1rem;
+      --mc-spacing-lg: 2rem;
+      --mc-duration-default: 0.8;
+      --mc-easing-default: power2.inOut;
+      --mc-enter-type: from-hidden;
+      --mc-exit-type: to-hidden;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--mc-bg, #0a0a1a);
+      color: var(--mc-text, #e0e0e0);
+      font-family: var(--mc-font-primary, 'Inter', sans-serif);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .scene {
+      width: 1920px;
+      max-width: 100vw;
+      height: 1080px;
+      max-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--mc-spacing-lg, 2rem);
+    }
+
+    .text-content {
+      max-width: 800px;
+      text-align: center;
+      line-height: 1.8;
+      font-size: var(--mc-body-size, 1rem);
+      /* CSS state model: final visible state defined in CSS */
+      opacity: 1;
+      transform: none;
+    }
+
+    .keyword {
+      display: inline;
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+      font-weight: 600;
+      /* CSS state model: final visible + highlighted state defined in CSS */
+      opacity: 1;
+      transform: none;
+      color: var(--mc-bg-alt, #1a1a2e);
+      background-color: var(--mc-primary, #00ff88);
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene-demo">
+    <div class="text-content">
+      好的代码不仅要<span class="keyword">可运行</span>，更要<span class="keyword">可维护</span>。<br>
+      团队协作的核心是<span class="keyword">沟通</span>与<span class="keyword">信任</span>，<br>
+      而<span class="keyword">自动化</span>是提升效率的关键。
+    </div>
+  </div>
+
+  <script>
+    // ?static=true XSS-safe parsing: only check key existence, never use values in DOM
+    const isStatic = new URLSearchParams(window.location.search).has('static');
+
+    if (isStatic) {
+      // Static mode: skip animation, show final state only
+      // CSS already defines final visible state (opacity:1, transform:none)
+      // Keywords already have highlight background-color in CSS
+      // No timeline creation needed
+    } else {
+      // text_highlight — Pattern P6: Text Highlight
+      // Easing: power2.inOut (smooth transition)
+      // Duration: 0.3-0.5s per keyword highlight (default 0.4s)
+      // Stagger: 0.15-0.2s between keywords (default 0.2s)
+      // Highlight color contrast >= 3:1 against background
+      // Hold >= 0.5s after all highlights complete
+
+      // Reset keywords to un-highlighted state for animation
+      gsap.set('.keyword', {
+        backgroundColor: 'transparent',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--mc-text-muted').trim() || '#6b6b7b'
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      // Phase 1: Text content fades in
+      tl.from('.text-content', {
+        opacity: 0,
+        y: 15,
+        duration: 0.5,
+        ease: 'power2.out'
+      })
+      // Phase 2: Keywords highlight one by one with stagger
+      .to('.keyword', {
+        backgroundColor: '#00ff88',
+        color: '#1a1a2e',
+        duration: 0.4,
+        ease: 'power2.inOut',
+        stagger: 0.2
+      }, '-=0.1')
+      // Hold >= 0.5s after all highlights (mandatory text dwell rule)
+      .to({}, { duration: 0.5 });
+
+      <!-- DEMO-ONLY -->
+      window.__timelines = window.__timelines || {};
+      window.__timelines['block-demo-text_highlight'] = tl;
+      tl.play();
+      <!-- END DEMO-ONLY -->
+    }
+  </script>
+</body>
+</html>
