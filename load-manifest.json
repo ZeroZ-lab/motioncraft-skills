@@ -5,11 +5,29 @@
       "skills": ["CANON.md"]
     }
   },
+  "phases": {
+    "define": {
+      "skills": ["define-brief"],
+      "description": "视频任务定义"
+    },
+    "design": {
+      "skills": ["design-title-cover", "design-script-beats", "design-storyboard", "design-styleframes"],
+      "description": "标题封面、叙事节奏、分镜场景、静态关键帧"
+    },
+    "build": {
+      "skills": ["build-web-motion"],
+      "description": "Web 动画工程生成"
+    },
+    "verify": {
+      "skills": ["verify-render-qa"],
+      "description": "渲染质检与导出"
+    }
+  },
   "taskTypes": {
     "brief": {
       "description": "视频任务定义、brief",
       "detect": {
-        "anyKeywords": ["brief", "视频任务", "任务定义", "做视频", "视频brief", "video brief"]
+        "anyKeywords": ["brief", "视频任务", "任务定义", "做视频", "视频brief", "video brief", "视频", "video", "动画视频"]
       },
       "skills": ["define-brief"]
     },
@@ -44,14 +62,14 @@
     "web-motion": {
       "description": "Web 动画工程、GSAP、HyperFrames",
       "detect": {
-        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames", "__timelines", "data-composition-id", "音频", "audio"]
+        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames", "__timelines", "data-composition-id", "HyperFrames集成"]
       },
       "skills": ["build-web-motion"]
     },
     "render-qa": {
       "description": "渲染、质检、导出、QA",
       "detect": {
-        "anyKeywords": ["render", "渲染", "质检", "QA", "导出", "export", "交付", "video export"]
+        "anyKeywords": ["render", "渲染", "质检", "QA", "导出", "export", "交付", "video export", "HyperFrames render", "视频导出"]
       },
       "skills": ["verify-render-qa"]
     },
@@ -63,22 +81,40 @@
       "skills": ["build-web-motion"]
     }
   },
+  "context_signals": {
+    "has_idea_no_brief": ["define-brief"],
+    "has_brief_no_title": ["design-title-cover"],
+    "has_title_no_script": ["design-script-beats"],
+    "has_script_no_storyboard": ["design-storyboard"],
+    "has_storyboard_no_styleframes": ["design-styleframes"],
+    "has_styleframes_no_project": ["build-web-motion"],
+    "has_project_no_render": ["verify-render-qa"],
+    "has_audio_need_mix": ["build-web-motion"]
+  },
   "checkpoints": {
-    "before-title-cover": {
-      "description": "进入标题封面设计前 — 加载 title-cover-scout",
-      "skills": ["design-title-cover"]
+    "checkpoint_1_title_cover": {
+      "description": "标题封面确认 — 第 1 个人工确认点",
+      "skills": ["design-title-cover"],
+      "agents": ["title-cover-scout"]
     },
-    "before-storyboard": {
-      "description": "进入分镜设计前 — 加载 storyboard-reviewer",
-      "skills": ["design-storyboard"]
+    "checkpoint_2_storyboard": {
+      "description": "Storyboard 确认 — 第 2 个人工确认点",
+      "skills": ["design-storyboard"],
+      "agents": ["storyboard-reviewer", "styleframe-reviewer"]
     },
-    "before-compose": {
-      "description": "进入动画工程前 — 加载 motion-engineer",
-      "skills": ["build-web-motion"]
-    },
-    "before-render-qa": {
-      "description": "进入渲染质检前 — 加载 render-qa-auditor",
-      "skills": ["verify-render-qa"]
+    "checkpoint_3_render_qa": {
+      "description": "Render QA 确认 — 第 3 个人工确认点",
+      "skills": ["verify-render-qa"],
+      "agents": ["render-qa-auditor"]
     }
+  },
+  "skill_descriptions": {
+    "define-brief": "有一个视频主题或想法需要结构化成可执行任务",
+    "design-title-cover": "brief 已批准需要确定标题和封面的点击理由与承诺",
+    "design-script-beats": "标题封面已批准需要拆解叙事节奏点",
+    "design-storyboard": "script-beats 已批准需要把节奏点转成可执行场景",
+    "design-styleframes": "storyboard 已批准需要设计每幕的静态关键帧",
+    "build-web-motion": "storyboard + styleframes 已批准需要生成可渲染 Web 动画工程",
+    "verify-render-qa": "Web 动画工程已完成需要渲染质检和导出"
   }
 }
