@@ -58,6 +58,9 @@ scenes:
     purpose: hook             # 功能目的
     content_type: text            # 新增：6 种内容类型之一
     animation_strategy: title_reveal  # 新增：Scene Animation Guide 策略词表
+    engine_preference: gsap        # 新增：可选，默认 gsap（advisory per CANON §5）
+    visual_effect:                 # 新增：可选，React-Bits 效果名
+    effect_justification:          # 新增：visual_effect 存在时必填（CANON §4）
     narration:                # 旁白/字幕文本
     on_screen_text:           # 屏幕文字
     visual:                   # 画面描述
@@ -92,6 +95,28 @@ scenes:
 **步骤 2：选择 animation_strategy**
 
 从 `references/scene-animation-guide.md` 的策略词表中选择对应策略名。AI 不自创策略。
+
+**步骤 2.5：确定 engine_preference**
+
+从策略词表的 `#engine:xxx` 标签确认引擎偏好。引擎选择规则参考 scene-animation-guide.md 的"引擎选择规则" section。
+
+| 条件 | engine_preference |
+|------|-----------------|
+| 策略标签 `#engine:gsap` | gsap (默认) |
+| 策略标签 `#engine:animejs` | animejs |
+| 需要 SVG morph | animejs (唯一选择) |
+| 需要 spring physics | animejs (首选) |
+| 引用 React-Bits animejs 效果 | animejs |
+| 否则 | gsap (默认) |
+
+**步骤 2.6：确定 visual_effect（可选）**
+
+如果 scene 需要增强视觉效果，从 `references/react-bits-catalog.md` 选择 video-recommended 效果。选择时必须同时填写 `effect_justification`。
+
+**effect_justification 规则（CANON §4）：**
+- 必须回答"这个效果帮助观众理解什么？"
+- 适用所有引擎，不限于 anime.js
+- 如果无法回答，该 visual_effect 违反 CANON §4，不应使用
 
 **多类型场景规则**（参考 scene-animation-guide.md）：
 1. purpose 优先于 content：hook/ending purpose → mood type
@@ -246,5 +271,8 @@ scene 时间是否重叠？
 - [ ] 每个 scene 有转场设计
 - [ ] 每个 scene 有 content_type
 - [ ] animation_strategy 引用策略词表
+- [ ] engine_preference 与策略标签一致（默认 gsap）
+- [ ] visual_effect 引用 React-Bits 目录（可选）
+- [ ] effect_justification 在 visual_effect 存在时必填（CANON §4）
 - [ ] storyboard-reviewer 已审查
 - [ ] 用户已批准 storyboard

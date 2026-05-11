@@ -10,22 +10,26 @@
 2. **性能先于效果** — 60fps > 炫酷但掉帧
 3. **SVG 优先于 Canvas** — 除非需要粒子/大量对象
 4. **简单先于复杂** — 能用 CSS transition 解决的不用 GSAP
+5. **GSAP 默认引擎** — anime.js 仅在 morph/spring/React-Bits animejs 效果时使用
 
 ## 决策框架
 
 ### Scene Block 选型
 
-| 需求 | Content Type | 推荐 | 理由 |
-|------|-------------|------|------|
-| 标题出现 | text | GSAP from() | 简单淡入/位移 |
-| 卡片堆叠 | comparison, concept | GSAP stagger | 批量动画标准方案 |
-| 线条绘制 | process | SVG + GSAP drawSVG | 路径动画标准方案 |
-| 数据流动 | process | GSAP motionPath | 沿路径动画 |
-| 粒子效果 | mood | PixiJS | 大量对象高性能 |
-| 3D 效果 | mood | Three.js | 仅在必要时 |
-| 图表构建 | concept, process | GSAP + SVG | 逐步构建 |
-| 数字计数 | data | GSAP to() + onUpdate | 数值动画 |
-| 代码打字 | text (code_text) | GSAP stagger (char) | 逐字出现 |
+| 需求 | Content Type | GSAP 推荐 | anime.js 推荐 | 理由 |
+|------|-------------|----------|-------------|------|
+| 标题出现 | text | GSAP from() | anime.js blur/split (可选) | 标准淡入=GSAP, 逐字模糊=anime.js |
+| 卡片堆叠 | comparison, concept | GSAP stagger | — | 批量动画标准方案 |
+| 线条绘制 | process | CSS stroke-dashoffset | anime.js createDrawable (可选) | CSS 80%+ 覆盖，anime.js 精确控制 |
+| 数据流动 | process | GSAP motionPath | — | 沿路径动画 |
+| 粒子效果 | mood | PixiJS | — | 大量对象高性能 |
+| 3D 效果 | mood | Three.js | — | 仅在必要时 |
+| 图表构建 | concept, process | GSAP + SVG | anime.js morphTo (可选) | 逐步构建=GSAP, 形态变形=anime.js |
+| 数字计数 | data | GSAP to() + onUpdate | anime.js spring (可选) | 平滑计数=GSAP, 弹簧活力=anime.js |
+| 代码打字 | text (code_text) | GSAP stagger (char) | — | 逐字出现 |
+| 弹簧入场 | mood | back.out(1.5) 近似 | anime.js spring (首选) | 弹簧物理=anime.js 真实 |
+| SVG morph | concept, comparison | — (需付费 MorphSVG) | anime.js morphTo (首选) | morph 免费=anime.js |
+| 背景氛围 | mood | CSS/GSAP | OGL/Three.js shader (可选) | CSS 背景=GSAP, shader 背景=Three.js |
 
 ### Easing 标准
 
@@ -49,11 +53,25 @@
 
 所有 MotionCraft 工程必须遵循 HyperFrames 集成规范：
 
-### 必须指导
+### GSAP 集成（必须）
 - GSAP timeline 必须使用 `{ paused: true }` — HyperFrames 控制播放
 - Timeline 必须注册到 `window.__timelines[<composition-id>]`
 - HTML 根元素必须有 `data-composition-id`、`data-start="0"`、`data-width`、`data-height`
 - 不使用 `window.__hf` — HyperFrames 通过 `__timelines` 自动发现
+
+### anime.js 集成（anime.js 珞略时必须）
+- anime.js timeline 必须使用 `autoplay: false` — 等效 GSAP `{ paused: true }`
+- Timeline 必须注册到 `window.__hfAnime[<composition-id>]`
+- anime.js v3 seek 使用**毫秒**，GSAP seek 使用**秒**——这是关键差异
+- anime.js v4 seek 单位待确认（可能改为秒），生产环境必须 pin 到 v4.3.0 并验证
+- 参考 `references/animejs-video-guide.md` 完整规范
+
+### 双引擎协作
+- GSAP 和 anime.js timeline 可在同一 composition 共存
+- GSAP 管理 scene 可见性（opacity 切换、入场动画）
+- anime.js 管理 scene 内的 morph/spring/blur 效果
+- 两个 timeline 独立 seek/play，无时钟同步依赖
+- CSS 状态模型：元素 CSS 定义"最终可见状态"，动画引擎 animate FROM hidden TO visible
 
 ### 工程结构建议
 - `motion.js` 放在 `<script>` 标签最后加载（在 GSAP 之后）
@@ -97,15 +115,15 @@
 
 ### Content-type → Pattern 映射表
 
-| Content Type | Primary Pattern(s) | Secondary Pattern(s) | 推荐 Easing |
+| Content Type | GSAP Primary Pattern(s) | anime.js Primary Pattern(s) | 推荐 Easing |
 |---|---|---|---|
-| text | P1 Title Reveal, P6 Text Highlight | P10 Ending Reveal | power2.out |
-| text (code_text) | 自定义 typewriter | P6 Text Highlight (syntax) | — |
-| data | P4 Number Count | P2 Stagger Cards (组合) | power1.out |
-| concept | P5 Diagram Build | P8 Card Stack | power1.inOut |
-| process | P3 Line Draw | P5 Diagram Build | power1.inOut |
-| comparison | P2 Stagger Cards, P9 Grid Swap | P8 Card Stack | power2.out |
-| mood | P7 Camera Pan, P10 Ending Reveal | — | power1.inOut / back.out |
+| text | P1 Title Reveal, P6 Text Highlight | P14 Blur Reveal, P15 Split Text, P16 Morph Build | power2.out / easeOutExpo |
+| text (code_text) | 自定义 typewriter | — | — |
+| data | P4 Number Count | P19 Count Up Spring | power1.out / spring(200,15) |
+| concept | P5 Diagram Build | P16 Morph Build, P20 Path Draw | power1.inOut / easeInOutQuad |
+| process | P3 Line Draw | P20 Path Draw (可选) | power1.inOut / easeInOutSine |
+| comparison | P2 Stagger Cards, P9 Grid Swap | P17 Morph Compare | power2.out / easeInOutQuad |
+| mood | P7 Camera Pan, P10 Ending Reveal | P18 Spring Enter | power1.inOut / spring(200,15) |
 
 ### 策略查找流程
 

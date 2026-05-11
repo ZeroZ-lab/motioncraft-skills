@@ -60,9 +60,9 @@
       "skills": ["design-styleframes"]
     },
     "web-motion": {
-      "description": "Web 动画工程、GSAP、HyperFrames",
+      "description": "Web 动画工程、GSAP、anime.js、HyperFrames",
       "detect": {
-        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames", "__timelines", "data-composition-id", "HyperFrames集成"]
+        "anyKeywords": ["compose", "动画工程", "GSAP", "anime.js", "web motion", "composition", "动画实现", "HyperFrames", "__timelines", "__hfAnime", "data-composition-id", "HyperFrames集成"]
       },
       "skills": ["build-web-motion"]
     },

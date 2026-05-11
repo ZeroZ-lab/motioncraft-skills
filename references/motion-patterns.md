@@ -1,6 +1,7 @@
 # Motion Patterns — 基础动效模式
 
-> 10 个基础 motion pattern，覆盖 Web 动画视频 80% 的常见场景
+> 20 个基础 motion pattern，覆盖 Web 动画视频的常见场景
+> P1-P13: GSAP patterns | P14-P20: anime.js patterns
 
 ## Pattern 1: Title Reveal（标题出现）
 
@@ -279,3 +280,209 @@ window.__timelines['<composition-id>'] = tl;
 - 每个视频不超过 5-8 个音效点
 - 可同时存在多个 SFX（不同 `data-start`）
 - 适用：转场、强调、反馈、里程碑
+
+## Pattern 14: Blur Reveal #engine:animejs
+
+**用途：** 逐字/逐词模糊揭示，用于强调关键词的转换过程
+
+```javascript
+// anime.js 实现
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.title-char', {
+  opacity: [0, 1],
+  filter: ['blur(10px)', 'blur(0px)'],
+  translateY: [20, 0],
+  duration: 0.8,
+  stagger: 0.05,
+  ease: 'easeOutExpo'
+});
+// HyperFrames hfAnime registration
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- duration: 0.6-1.0s per character group
+- stagger: 0.05-0.1s per character
+- blur range: 8-12px → 0px
+- y offset: 15-25px → 0
+- 适用：关键词揭示、转换强调、React-Bits BlurText 提取
+
+**anime.js vs GSAP 对照：**
+- anime.js 使用 `filter: ['blur(10px)', 'blur(0px)']` 实现逐字模糊
+- GSAP 无内置逐字模糊策略（需逐字符手动 tween）
+- HyperFrames 注册：anime.js → `window.__hfAnime`，GSAP → `window.__timelines`
+
+## Pattern 15: Split Text Reveal #engine:animejs
+
+**用途：** 逐字拆分揭示，字符从散落位置汇聚到正确位置
+
+```javascript
+// anime.js 实现
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.title-char', {
+  opacity: [0, 1],
+  translateX: [30, 0],
+  translateY: [-15, 0],
+  rotate: [15, 0],
+  duration: 0.8,
+  stagger: 0.05,
+  ease: 'easeOutExpo'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- duration: 0.6-1.0s per character group
+- stagger: 0.04-0.08s per character
+- x/y scatter: ±30-50px → 0
+- rotation scatter: ±15-30deg → 0
+- 适用：关键词汇聚、React-Bits SplitText 提取
+
+## Pattern 16: Morph Build #engine:animejs
+
+**用途：** SVG 形态变形构建，元素从一种形状变形到另一种形状
+
+```javascript
+// anime.js 实现 — SVG morphTo
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.morph-element', {
+  morphTo: 'M50,5 L95,5 Q95,5 95,50 Q95,95 50,95 Q5,95 5,50 Q5,5 50,5 Z',
+  duration: 1.0,
+  ease: 'easeInOutQuad'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- duration: 0.8-1.5s
+- easing: easeInOutQuad
+- morph source/target path 节点数必须匹配
+- 适用：概念转换、形态变形、React-Bits SVG morph 效果
+
+**anime.js vs GSAP 对照：**
+- anime.js `morphTo` 免费（GSAP MorphSVG 付费 $25/mo Business License）
+- anime.js morphTo 适用于基本形状变形，复杂多段路径 morph 可能需要 flubber/polymorph-js 辅助
+- CSS 无原生 SVG path morph capability
+
+## Pattern 17: Morph Compare #engine:animejs
+
+**用途：** SVG 形态前后对比，从"状态 A"形状变形到"状态 B"形状
+
+```javascript
+// anime.js 实现 — SVG morphTo before→after
+const tl = anime.createTimeline({ autoplay: false });
+// 标签切换 + 形变
+tl.add('.state-label', {
+  opacity: [1, 0],
+  duration: 0.3
+})
+.add('.compare-element', {
+  morphTo: '<state-b-path>',
+  duration: 1.2,
+  ease: 'easeInOutQuad'
+}, '-=100');
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- duration: 0.8-1.5s
+- 形变前后两个 path 节点数必须匹配
+- 适用：前后对比、状态对比、架构变化可视化
+
+**anime.js vs GSAP 对照：**
+- GSAP `before_after` 策略使用 scale+opacity（视觉变形感较弱）
+- anime.js `morph_compare` 使用 SVG path morph（真正的形变，更表达本质差异）
+- 两者不是等价替代：morph_compare 适合"结构性变化"，before_after 适合"状态性变化"
+
+## Pattern 18: Spring Enter #engine:animejs
+
+**用途：** 弹簧物理入场，元素以真实弹簧物理运动入场
+
+```javascript
+// anime.js 实现 — spring physics
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.hero-element', {
+  translateX: [50, 0],
+  translateY: [30, 0],
+  opacity: [0, 1],
+  spring: { stiffness: 200, damping: 15 },
+  duration: 0  // spring auto-calculates duration
+});
+// stretch() to align with storyboard timing if needed
+tl.stretch(<storyboard-duration>);
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- stiffness: 100-500, default 200（弹簧硬度）
+- damping: 5-30, default 15（阻尼系数）
+- spring auto-calculates duration — 使用 `stretch()` 强制对齐 storyboard 时长
+- 适用：活力入场、hero 元素、品牌展示
+
+**anime.js vs GSAP 对照：**
+- anime.js `spring()` 是真正的弹簧物理（超调+自然回弹+衰减）
+- GSAP `elastic.out` 是曲线近似（没有真实的超调衰减过程）
+- GSAP `back.out(1.5)` 是更弱的近似（单次超调，无衰减）
+- anime.js spring 不可被 GSAP 精确复制——GSAP fallback 是近似替代
+
+## Pattern 19: Count Up Spring #engine:animejs
+
+**用途：** 弹簧计数动画，数字以弹簧物理增长到目标值
+
+```javascript
+// anime.js 实现 — spring count
+const tl = anime.createTimeline({ autoplay: false });
+tl.add('.metric-value', {
+  innerHTML: [0, 12847],
+  round: true,
+  spring: { stiffness: 200, damping: 15 },
+  duration: 0  // spring auto-calculates
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- spring_stiffness: 100-500, default 200
+- spring_damping: 5-30, default 15
+- 数字短暂超过目标值后回弹——传达"增长活力"
+- 适用：数据展示、增长指标、React-Bits CountUp 提取
+
+**anime.js vs GSAP 对照：**
+- GSAP `number_count` (P4) 使用 `power1.out`（平滑增长，无超调）
+- anime.js `count_up_anim` 使用 spring（超调+回弹，更有活力感）
+- 弹簧计数更适合"增长势头"语义，平滑计数更适合"精确到达"语义
+
+## Pattern 20: Path Draw #engine:animejs
+
+**用途：** SVG 路径精确绘制，使用 anime.js createDrawable
+
+```javascript
+// anime.js 实现 — SVG createDrawable
+const drawable = anime.svg.createDrawable('.flow-path');
+const tl = anime.createTimeline({ autoplay: false });
+tl.add(drawable, {
+  drawProgress: [0, 1],
+  duration: 1.0,
+  ease: 'easeInOutSine'
+});
+window.__hfAnime = window.__hfAnime || {};
+window.__hfAnime['<composition-id>'] = tl;
+```
+
+**参数：**
+- duration: 0.8-1.5s
+- easing: easeInOutSine
+- 需先使用 `anime.svg.createDrawable()` 初始化路径元素
+- 适用：流程绘制、路径动画、需要比 CSS stroke-dashoffset 更精确控制的场景
+
+**anime.js vs GSAP 对照：**
+- GSAP `line_draw` (P3) 使用 DrawSVGPlugin（付费）或 CSS stroke-dashoffset（免费）
+- CSS stroke-dashoffset 覆盖 80%+ line_draw 场景
+- anime.js `createDrawable` 提供更精确的绘制进度控制（drawProgress 0→1）
+- 同一 composition 中应统一使用一种引擎的路径绘制，避免混用
