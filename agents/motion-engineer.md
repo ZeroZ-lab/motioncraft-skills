@@ -64,6 +64,31 @@
 - 这是已知问题，不影响运行时功能
 - 缓解方式：确保注册代码直接写在 `motion.js` 文件末尾
 
+## 音频集成指导
+
+### 背景音乐建议
+- 选择纯音乐，避免人声干扰文字内容
+- 音量 ≤ 0.2，让观众注意力在视觉内容
+- 推荐 .mp3 格式（文件小，兼容好）
+- 文件放入 `assets/audio/`
+- 免费资源：Pixabay Music、Mixkit Music
+
+### 音效建议
+- 用于关键转场和强调点（不超过 5-8 个音效点）
+- 音量 0.5-0.8，需要足够明显但不刺耳
+- 推荐 .wav 格式（低延迟，精确同步）
+- `data-start` 必须与 storyboard scene 起始时间对齐
+- 免费资源：Mixkit SFX
+
+### 音轨规划
+- track-index 3: 背景音乐（BGM）
+- track-index 2: 音效（SFX）
+- `<audio>` 元素放在 HTML 根容器内（与 scene 同级）
+
+### Timeline 延伸
+- 添加音频后，motion.js 末尾必须加 `tl.set({}, {}, STORYBOARD_DURATION)`
+- 确保音频不被截断
+
 ## 输出结构
 
 ```markdown

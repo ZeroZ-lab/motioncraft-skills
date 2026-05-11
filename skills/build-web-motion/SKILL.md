@@ -86,6 +86,75 @@ window.__timelines['<project-name>'] = tl;
 - [ ] Timeline 注册到 `window.__timelines[<composition-id>]`
 - [ ] composition-id 在 HTML 和 JS 中一致
 
+## 音频集成（可选）
+
+背景音乐和音效通过 HyperFrames `<audio>` 元素集成。音频是可选的——无音频也能正常渲染。
+
+### 免费音频资源
+
+| 库 | 类型 | 许可证 | 署名 |
+|----|------|--------|------|
+| [Pixabay Music](https://pixabay.com/music/) | BGM | Pixabay License | 不需要 |
+| [Mixkit Music](https://mixkit.co/free-stock-music/) | BGM | Mixkit License | 不需要 |
+| [Mixkit SFX](https://mixkit.co/free-sound-effects/) | SFX | Mixkit License | 不需要 |
+
+### HTML 结构
+
+`<audio>` 元素放在根容器内（与 scene 同级），不需要 `class="clip"`：
+
+```html
+<div data-composition-id="<project-name>" data-start="0" data-width="1920" data-height="1080">
+  <!-- scenes -->
+
+  <!-- 背景音乐（全时长） -->
+  <audio id="bg-music"
+         data-start="0"
+         data-duration="<total-duration>"
+         data-track-index="3"
+         data-volume="0.15"
+         src="assets/audio/bg-music.mp3"></audio>
+
+  <!-- 音效（特定时间点） -->
+  <audio id="sfx-whoosh"
+         data-start="5"
+         data-duration="1"
+         data-track-index="2"
+         data-volume="0.7"
+         src="assets/audio/whoosh.wav"></audio>
+</div>
+```
+
+### 音频属性
+
+| 属性 | 说明 | 推荐 |
+|------|------|------|
+| `data-start` | 开始时间（秒） | 对齐 storyboard scene 起始时间 |
+| `data-duration` | 持续时长（秒） | BGM = 视频总时长，SFX = 音效长度 |
+| `data-track-index` | 音轨索引 | BGM = 3，SFX = 2 |
+| `data-volume` | 音量 0.0-1.0 | BGM ≤ 0.2，SFX 0.5-0.8 |
+| `src` | 文件路径 | BGM 推荐 .mp3，SFX 推荐 .wav |
+
+### 音频集成检查清单
+
+- [ ] 音频文件已放入 `assets/audio/`
+- [ ] `<audio>` 元素在根容器内（与 scene 同级）
+- [ ] `data-track-index` ≥ 2（BGM=3，SFX=2）
+- [ ] `data-volume` BGM ≤ 0.2，SFX 0.5-0.8
+- [ ] `data-start` 与 storyboard scene 时间对齐
+- [ ] 音频时长不超过视频总时长
+
+### Timeline 延伸（重要）
+
+如果添加音频，motion.js 末尾必须确保 timeline 覆盖完整时长：
+
+```javascript
+// 确保音频不被截断
+tl.set({}, {}, STORYBOARD_DURATION);
+
+window.__timelines = window.__timelines || {};
+window.__timelines['<project-name>'] = tl;
+```
+
 ## 流程
 
 ### Step 1：读取合同
@@ -102,7 +171,9 @@ project/
   styles.css          — 全局样式
   motion.js           — GSAP timeline
   storyboard.json     — 分镜数据
-  assets/             — 素材目录
+  assets/
+    images/           — 图片素材
+    audio/            — 音频素材（BGM + SFX）
 ```
 
 ### Step 3：逐 scene 实现

@@ -44,7 +44,7 @@
     "web-motion": {
       "description": "Web 动画工程、GSAP、HyperFrames",
       "detect": {
-        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames"]
+        "anyKeywords": ["compose", "动画工程", "GSAP", "web motion", "composition", "动画实现", "HyperFrames", "__timelines", "data-composition-id", "音频", "audio"]
       },
       "skills": ["build-web-motion"]
     },
@@ -54,6 +54,13 @@
         "anyKeywords": ["render", "渲染", "质检", "QA", "导出", "export", "交付", "video export"]
       },
       "skills": ["verify-render-qa"]
+    },
+    "audio": {
+      "description": "音频集成、背景音乐、音效",
+      "detect": {
+        "anyKeywords": ["音频", "audio", "背景音乐", "bgm", "音效", "sound effect", "music"]
+      },
+      "skills": ["build-web-motion"]
     }
   },
   "checkpoints": {

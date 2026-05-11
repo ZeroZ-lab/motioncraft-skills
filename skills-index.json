@@ -29,8 +29,8 @@
       "脚本|script|节奏|beats|叙事|旁白|narration": ["design-script-beats"],
       "分镜|storyboard|场景|scene|时间轴": ["design-storyboard"],
       "styleframe|关键帧|静态画面|构图|visual design": ["design-styleframes"],
-      "compose|动画工程|GSAP|web motion|composition|动画实现": ["build-web-motion"],
-      "render|渲染|质检|QA|导出|export|交付": ["verify-render-qa"],
+      "compose|动画工程|GSAP|web motion|composition|动画实现|HyperFrames集成|__timelines": ["build-web-motion"],
+      "render|渲染|质检|QA|导出|export|交付|HyperFrames render|视频导出": ["verify-render-qa"],
       "视频|video|动画|motion|动画视频": ["define-brief"]
     },
     "context_signals": {
@@ -40,7 +40,8 @@
       "has_script_no_storyboard": ["design-storyboard"],
       "has_storyboard_no_styleframes": ["design-styleframes"],
       "has_styleframes_no_project": ["build-web-motion"],
-      "has_project_no_render": ["verify-render-qa"]
+      "has_project_no_render": ["verify-render-qa"],
+      "has_audio_need_mix": ["build-web-motion"]
     }
   },
   "by_checkpoint": {

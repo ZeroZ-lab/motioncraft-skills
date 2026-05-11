@@ -225,3 +225,57 @@ window.__timelines['<composition-id>'] = tl;
 ```
 
 - 适用：所有需要渲染导出的 Web 动画工程
+
+## Pattern 12: Background Music (BGM)
+
+**用途：** 为视频添加背景音乐，贯穿全片
+
+```html
+<audio id="bg-music"
+       data-start="0"
+       data-duration="<total-duration>"
+       data-track-index="3"
+       data-volume="0.15"
+       src="assets/audio/bg-music.mp3"></audio>
+```
+
+**参数/规则：**
+- `data-track-index` 固定为 3（BGM 专用层）
+- `data-volume` 建议 0.1-0.2，不超过 0.3
+- `data-start` 通常为 0（从头播放）
+- `data-duration` 等于视频总时长
+- 推荐格式：.mp3（文件小）
+- 音频文件放入 `assets/audio/`
+- 适用：所有需要氛围烘托的视频
+
+## Pattern 13: Sound Effect (SFX)
+
+**用途：** 在特定时间点触发音效（转场、强调、反馈）
+
+```html
+<!-- 转场音效 -->
+<audio id="sfx-transition"
+       data-start="5"
+       data-duration="0.8"
+       data-track-index="2"
+       data-volume="0.7"
+       src="assets/audio/whoosh.wav"></audio>
+
+<!-- 强调音效 -->
+<audio id="sfx-highlight"
+       data-start="18"
+       data-duration="0.5"
+       data-track-index="2"
+       data-volume="0.6"
+       src="assets/audio/click.wav"></audio>
+```
+
+**参数/规则：**
+- `data-track-index` 固定为 2（SFX 专用层）
+- `data-volume` 建议 0.5-0.8
+- `data-start` 必须与 storyboard scene 起始时间对齐
+- `data-duration` 等于音效实际长度
+- 推荐格式：.wav（低延迟，精确同步）
+- 每个视频不超过 5-8 个音效点
+- 可同时存在多个 SFX（不同 `data-start`）
+- 适用：转场、强调、反馈、里程碑

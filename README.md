@@ -107,6 +107,17 @@ output/
 - **GSAP** — 时间轴动画
 - **PixiJS / Three.js** — 仅在需要特效时调用
 
+## 环境要求
+
+| 依赖 | 最低版本 | 说明 |
+|------|---------|------|
+| Node.js | >= 22 | HyperFrames 强制要求 |
+| FFmpeg | 7.x | 音频/视频编码 |
+| FFprobe | 7.x | 媒体信息探测 |
+| Chrome/Chromium | 系统安装 | HyperFrames 帧捕获 |
+| GSAP | 3.12+ | CDN 加载或本地引入 |
+| HyperFrames CLI | 0.4+ | `npx hyperframes doctor` 检查 |
+
 ## 6 个审查角色
 
 | 角色 | 审查阶段 | 职责 |
