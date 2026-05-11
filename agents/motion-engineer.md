@@ -59,7 +59,7 @@
 - HTML 根元素必须有 `data-composition-id`、`data-start="0"`、`data-width`、`data-height`
 - 不使用 `window.__hf` — HyperFrames 通过 `__timelines` 自动发现
 
-### anime.js 集成（anime.js 珞略时必须）
+### anime.js 集成（anime.js 策略时必须）
 - anime.js timeline 必须使用 `autoplay: false` — 等效 GSAP `{ paused: true }`
 - Timeline 必须注册到 `window.__hfAnime[<composition-id>]`
 - anime.js v3 seek 使用**毫秒**，GSAP seek 使用**秒**——这是关键差异

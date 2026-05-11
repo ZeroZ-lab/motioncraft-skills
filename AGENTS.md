@@ -1,6 +1,6 @@
 # MotionCraft Skills
 
-> 宪法 + 7 技能 + 7 命令 + 6 角色 + Scene Block Library + Template Scaffolding = Web 动画视频生产技能套件。
+> 宪法 + 8 技能 + 8 命令 + 7 角色 + Scene Block Library + Template Scaffolding = Web 动画视频生产技能套件。
 
 ## 如果你是一个 AI Agent
 
@@ -36,14 +36,14 @@ motioncraft-skills/
 ├── AGENTS.md                入口配置（本文件）
 ├── CLAUDE.md                Claude 侧指针文件（指向 AGENTS.md）
 │
-├── skills/                  7 技能 / 4 阶段
-│   ├── define/              定义（1）
+├── skills/                  8 技能 / 4 阶段
+│   ├── define/              定义（2）
 │   ├── design/              设计（4）
 │   ├── build/               构建（1）
 │   └── verify/              验证（1）
 │
-├── commands/                7 命令入口
-├── agents/                  6 角色
+├── commands/                8 命令入口
+├── agents/                  7 角色
 ├── templates/               4 starter 模板（dark-tech, minimal-clean, bold-editorial, data-visualization）
 └── references/              参考资料 + Scene Block Library
 ```
@@ -51,7 +51,7 @@ motioncraft-skills/
 ## 技能按阶段分组
 
 ```
-define/    → brief（视频任务定义）
+define/    → project（项目初始化）、brief（视频任务定义）
 design/    → title-cover（标题封面）、script-beats（叙事节奏）、
              storyboard（分镜场景）、styleframes（静态关键帧）
 build/     → web-motion（Web 动画工程）
@@ -62,19 +62,20 @@ verify/    → render-qa（渲染质检）
 
 | 命令 | 加载的技能 | 产出 | 人工确认 |
 |------|-----------|------|---------|
-| `/mc-brief` | define-brief | 视频任务 brief | `docs/video/<name>/01-brief.md` |
-| `/mc-title-cover` | design-title-cover | 标题封面 | `docs/video/<name>/02-title-cover.md` | ✅ Checkpoint 1 |
-| `/mc-script` | design-script-beats | 叙事节奏 | `docs/video/<name>/03-script-beats.md` |
-| `/mc-storyboard` | design-storyboard | 分镜场景 | `docs/video/<name>/04-storyboard.md` | ✅ Checkpoint 2 |
-| `/mc-styleframes` | design-styleframes | 静态关键帧 | `docs/video/<name>/05-styleframes.md` |
-| `/mc-compose` | build-web-motion | Web 动画工程 | `project/` | ✅ Checkpoint 0（模板选择） |
-| `/mc-render-qa` | verify-render-qa | QA 报告 + 导出 | `docs/video/<name>/06-qa-report.md` | ✅ Checkpoint 3 |
+| `/init` | define-project | 项目初始化 + `.mc-project.json` | ✅ Checkpoint 0（模板选择） |
+| `/brief` | define-brief | 视频任务 brief | `docs/video/<name>/01-brief.md` |
+| `/title-cover` | design-title-cover | 标题封面 | `docs/video/<name>/02-title-cover.md` | ✅ Checkpoint 1 |
+| `/script` | design-script-beats | 叙事节奏 | `docs/video/<name>/03-script-beats.md` |
+| `/storyboard` | design-storyboard | 分镜场景 | `docs/video/<name>/04-storyboard.md` | ✅ Checkpoint 2 |
+| `/styleframes` | design-styleframes | 静态关键帧 | `docs/video/<name>/05-styleframes.md` |
+| `/compose` | build-web-motion | Web 动画工程 | `project/` |
+| `/render-qa` | verify-render-qa | QA 报告 + 导出 | `docs/video/<name>/06-qa-report.md` | ✅ Checkpoint 3 |
 
 ## 4 个人工确认 Checkpoint
 
 | Checkpoint | 位置 | 审查角色 | 问题 |
 |-----------|------|---------|------|
-| 0 | 模板选择 | 用户 | 选择哪个模板？推荐是否合适？ |
+| 0 | 模板选择 | 用户 | 选择哪个模板？推荐是否合适？此决策不可逆。 |
 | 1 | 标题封面确认 | title-cover-scout | 这个标题值得点吗？封面一眼能看懂吗？视频承诺清楚吗？ |
 | 2 | Storyboard 确认 | storyboard-reviewer + styleframe-reviewer | 每一幕有必要吗？画面能承载信息吗？节奏合理吗？ |
 | 3 | Render QA 确认 | render-qa-auditor | 能正常渲染吗？风格符合预期吗？可以发布吗？ |
@@ -85,14 +86,15 @@ Agent 可以自动执行中间步骤，但这 4 个节点必须保留人工判�
 
 ```
 docs/video/<name>/
-├── 01-brief.md           ← /mc-brief
-├── 02-title-cover.md     ← /mc-title-cover
-├── 03-script-beats.md    ← /mc-script
-├── 04-storyboard.md      ← /mc-storyboard
-├── 05-styleframes.md     ← /mc-styleframes
-└── 06-qa-report.md       ← /mc-render-qa
+├── 01-brief.md           ← /brief
+├── 02-title-cover.md     ← /title-cover
+├── 03-script-beats.md    ← /script
+├── 04-storyboard.md      ← /storyboard
+├── 05-styleframes.md     ← /styleframes
+└── 06-qa-report.md       ← /render-qa
 
 project/
+├── .mc-project.json    — 项目元数据（由 /init 创建）
 ├── index.html          — 含 data-composition-id（HyperFrames 集成）
 ├── styles.css
 ├── motion.js           — 含 window.__timelines 注册
@@ -138,6 +140,7 @@ output/
 - 不能在技能中放松宪法条款
 - 不能在 storyboard 确认后重新发明场景
 - 不能跳过 4 个人工确认 checkpoint（含模板选择）
+- 不能在已有 project/ 的情况下运行 /init
 
 ## Scene Block Library
 
@@ -147,4 +150,4 @@ Scene Block Library 提供 8 个 GSAP 结构模板，覆盖 17 个 GSAP 策略�
 
 **查找方式**: `references/scene-blocks/MANIFEST.json` 提供 animation_strategy → block file + engine 的结构化映射。
 
-**模板选择**: `/mc-compose` Phase 0 通过 brief 信号推荐模板 + 人类 override 确认。见 `templates/TEMPLATE-GUIDE.md`。
+**模板选择**: `/init` Checkpoint 0 通过 brief 信号推荐模板 + 人类 override 确认。见 `templates/TEMPLATE-GUIDE.md`。

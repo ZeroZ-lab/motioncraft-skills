@@ -98,12 +98,12 @@ styleframes:
     content_type: text              # 来自 storyboard
     animation_strategy: title_reveal  # 来自 storyboard
     engine_preference: gsap            # 来自 storyboard（advisory）
-    animation_intent:                   # 新增：仅 anime.js 珞略需要
-      morph_source: "圆形图表"          # morph 珞略需指定来源形状（自然语言描述）
-      morph_target: "方形仪表盘"        # morph 珞略需指定目标形状（自然语言描述）
-      spring_stiffness: 200            # spring 珞略需指定物理参数 (range: 100-500)
-      spring_damping: 15               # spring 珞略需指定阻尼 (range: 5-30)
-      reveal_timing: "per-char"         # blur/split 珞略需指定揭示时序 (per-char|per-word|per-line)
+    animation_intent:                   # 新增：仅 anime.js 策略需要
+      morph_source: "圆形图表"          # morph 策略需指定来源形状（自然语言描述）
+      morph_target: "方形仪表盘"        # morph 策略需指定目标形状（自然语言描述）
+      spring_stiffness: 200            # spring 策略需指定物理参数 (range: 100-500)
+      spring_damping: 15               # spring 策略需指定阻尼 (range: 5-30)
+      reveal_timing: "per-char"         # blur/split 策略需指定揭示时序 (per-char|per-word|per-line)
     frame_description:        # 画面整体描述
     layout:                   # 布局方式
     typography:               # 文字排版
@@ -260,5 +260,5 @@ styleframes:
 - [ ] 每个 keyframe 通过构图检查
 - [ ] 所有 keyframe 风格一致
 - [ ] 动效潜力已评估
-- [ ] animation_intent 仅 anime.js 珞略需要，字段值在有效范围内
+- [ ] animation_intent 仅 anime.js 策略需要，字段值在有效范围内
 - [ ] styleframe-reviewer 已审查

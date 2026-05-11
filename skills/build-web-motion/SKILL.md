@@ -8,14 +8,15 @@ description: 生成 Web 动画工程。使用 cuando storyboard + styleframes �
 > 领域: workflow | 宪法: 第 5（Storyboard Is Contract）、第 6（Verify Don't Assume）条
 
 ## 入口/出口
-- **入口**: 已批准 storyboard + styleframes
+- **入口**: 已批准 storyboard + styleframes + project/ 目录已存在（/init 产出）
 - **出口**: `project/` 工程目录 + preview 验证证据
 - **指向**: 完成后调用 `verify-render-qa`
-- **假设已加载**: CANON.md + `design-storyboard` + `design-styleframes`
+- **假设已加载**: CANON.md + `design-storyboard` + `design-styleframes` + `.mc-project.json`
 
 ## 何时不使用
 - 视频不需要 Web 动画（实拍、3D 渲染等）
 - 已有可用的动画工程
+- project/ 目录不存在（需先运行 /init）
 
 ## Iron Law
 
@@ -59,7 +60,7 @@ window.__timelines = window.__timelines || {};
 window.__timelines['<composition-id>'] = gsapTimeline;
 ```
 
-**anime.js 注册（anime.js 珞略时必须）**:
+**anime.js 注册（anime.js 策略时必须）**:
 ```javascript
 window.__hfAnime = window.__hfAnime || {};
 window.__hfAnime['<composition-id>'] = animeTimeline;
@@ -118,7 +119,7 @@ window.__timelines['<project-name>'] = tl;
 - `window.__timelines` 不可改为其他名称（如 `window.__hf`） — HyperFrames 只识别 `__timelines`
 - `<project-name>` 必须与 HTML 中 `data-composition-id` 一致
 
-### anime.js Timeline 要求（anime.js 珞略时）
+### anime.js Timeline 要求（anime.js 策略时）
 
 ```javascript
 // 1. Timeline 必须使用 autoplay: false 创建
@@ -144,8 +145,8 @@ window.__hfAnime['<project-name>'] = tl;
 - [ ] HTML 根容器有 `data-composition-id`、`data-start`、`data-width`、`data-height`
 - [ ] GSAP timeline 使用 `{ paused: true }` 创建
 - [ ] GSAP Timeline 注册到 `window.__timelines[<composition-id>]`
-- [ ] anime.js timeline 使用 `autoplay: false` 创建（anime.js 珞略时）
-- [ ] anime.js Timeline 注册到 `window.__hfAnime[<composition-id>]`（anime.js 珞略时）
+- [ ] anime.js timeline 使用 `autoplay: false` 创建（anime.js 策略时）
+- [ ] anime.js Timeline 注册到 `window.__hfAnime[<composition-id>]`（anime.js 策略时）
 - [ ] composition-id 在 HTML 和 JS 中一致
 
 ## 音频集成（可选）
@@ -219,16 +220,17 @@ window.__timelines['<project-name>'] = tl;
 
 ## 流程
 
-### Step 1：读取合同 + 模板选择
+### Step 1：读取合同 + 读取项目信息
 
 读取 storyboard 和 styleframes，理解每个 scene 的完整定义。不猜测，不发明。
 
-**1.1 模板选择**（Checkpoint 0 — 人类确认）
+**1.1 读取项目信息**（由 /init 产出）
 
-1. 读取 brief 的 `style` 和 `topic` 字段
-2. 根据 `templates/TEMPLATE-GUIDE.md` 推荐映射表推断推荐模板
-3. 向用户展示推荐 + 所有 4 个模板选项，等待确认或 override
-4. 确认后，使用选定模板作为工程起点
+1. 读取 `project/.mc-project.json`
+2. 获取 `selected_template` 和 `composition_id`
+3. 不再做模板推荐和人工确认（模板选择已在 /init Checkpoint 0 完成）
+
+**Fallback**: .mc-project.json 不存在时（v1.7.0 兼容）→ 从 `project/styles.css` 的 `--mc-*` CSS 变量推断模板来源 → 自动生成 .mc-project.json → 继续正常流程
 
 **1.2 读取 storyboard**
 
@@ -239,32 +241,34 @@ window.__timelines['<project-name>'] = tl;
 - `visual_effect`：可选，React-Bits 效果名（参考 `references/react-bits-catalog.md`）
 - `effect_justification`：visual_effect 存在时必填（CANON §4）
 
-读取 styleframes 时，特别关注 anime.js 珞略的：
-- `animation_intent`：morph/spring/blur 珞略需要额外参数
+读取 styleframes 时，特别关注 anime.js 策略的：
+- `animation_intent`：morph/spring/blur 策略需要额外参数
   - morph_source/morph_target：自然语言形状描述，需翻译为 SVG path
   - spring_stiffness/spring_damping：anime.js spring 参数
   - reveal_timing：per-char | per-word | per-line
 
-### Step 2：初始化工程 + 读取 MANIFEST
+### Step 2：读取工程 + 读取 MANIFEST
 
-**2.1 初始化工程**
+**2.1 读取现有工程结构**
 
-基于 Step 1.1 选定的模板，复制模板目录为 `project/`：
-- 替换 `PLACEHOLDER_COMPOSITION_ID` 为实际项目名
-- 保留模板的 styles.css、motion.js 骨架、storyboard.json 结构
+project/ 已由 /init 创建，读取现有工程结构：
+- 读取 `project/.mc-project.json` 确认选定模板
+- 读取 `project/index.html`, `project/styles.css`, `project/motion.js`, `project/storyboard.json`
+- composition_id 已由 /init 替换完成（PLACEHOLDER_COMPOSITION_ID → 实际项目名）
 
 ```
 project/
-  index.html          — 主入口（从模板复制）
-  styles.css          — 全局样式（从模板复制）
-  motion.js           — GSAP timeline 骨架（从模板复制）
-  storyboard.json     — 分镜数据（从模板复制，填充实际 scenes）
+  .mc-project.json    — 项目元数据（由 /init 创建）
+  index.html          — 主入口（已替换 composition-id）
+  styles.css          — 全局样式（模板默认值）
+  motion.js           — GSAP timeline 骨架（已替换 composition-id）
+  storyboard.json     — 分镜数据结构
   assets/
     images/           — 图片素材
     audio/            — 音频素材（BGM + SFX）
 ```
 
-anime.js 珞略时添加 `motion-anime.js`。文件分离规则不变。
+anime.js 策略时添加 `motion-anime.js`。文件分离规则不变。
 
 **2.2 读取 Scene Block MANIFEST**
 
@@ -330,13 +334,13 @@ anime.js 珞略时添加 `motion-anime.js`。文件分离规则不变。
 
 根据 `engine_preference` 选择对应引擎：
 
-**GSAP 珞略**（engine_preference: gsap 或默认）：
+**GSAP 策略**（engine_preference: gsap 或默认）：
 - 所有动画进入主 GSAP timeline
 - 使用 `gsap.timeline()` 管理序列
 - 每个 scene 的动画时长匹配 storyboard
 - 使用 `references/motion-principles.md` 中的动效标准
 
-**anime.js 珞略**（engine_preference: animejs）：
+**anime.js 策略**（engine_preference: animejs）：
 - anime.js 动画进入 anime.js timeline（`motion-anime.js` 文件）
 - GSAP 仍管理 scene 可见性和过渡（GSAP timeline 是主控）
 - anime.js timeline 只负责 scene 内的 morph/spring/blur 效果
@@ -491,7 +495,7 @@ console.log(`目标: ${targetDuration}s, 实际: ${actualDuration.toFixed(2)}s, 
 <HARD-GATE>
 以下任何一个出现，立即停止：
 - 添加 storyboard 之外的 scene
-- 动画不进入 GSAP timeline（GSAP 珞略）或 anime.js timeline（anime.js 珞略）
+- 动画不进入 GSAP timeline（GSAP 策略）或 anime.js timeline（anime.js 策略）
 - anime.js timeline 省略 `autoplay: false`
 - anime.js timeline 注册到 `window.__timelines`（应注册到 `window.__hfAnime`）
 - CSS 和动画引擎双重设置隐藏状态（opacity:0 in CSS + .from({opacity:0})）
@@ -507,9 +511,9 @@ console.log(`目标: ${targetDuration}s, 实际: ${actualDuration.toFixed(2)}s, 
 - [ ] 每个 scene 结构来自 storyboard
 - [ ] 视觉效果来自 styleframes
 - [ ] GSAP 动画在 GSAP timeline 中
-- [ ] anime.js 动画在 anime.js timeline 中（anime.js 珞略时）
+- [ ] anime.js 动画在 anime.js timeline 中（anime.js 策略时）
 - [ ] GSAP 注册到 `window.__timelines`
-- [ ] anime.js 注册到 `window.__hfAnime`（anime.js 珞略时）
+- [ ] anime.js 注册到 `window.__hfAnime`（anime.js 策略时）
 - [ ] 每个 scene 使用了 MANIFEST.json 中映射的 block 作为参考（或标注为 custom）
 - [ ] CANON §3 静态验证已完成（styleframe 构图成立）
 - [ ] 每个 scene 独立 preview 通过

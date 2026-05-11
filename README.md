@@ -2,27 +2,28 @@
 
 Web 动画视频生产技能套件 — Claude Code Plugin。
 
-把模糊的视频创意，通过 7 步结构化流程，转化为可预览、可渲染、可复用的 Web 动画视频工程。
+把模糊的视频创意，通过 8 步结构化流程，转化为可预览、可渲染、可复用的 Web 动画视频工程。
 
 ## 核心理念
 
 > **先定义视频承诺，再设计理解路径，再生成可渲染工程。** 工具只是执行层，workflow 才是生产系统。
 
-## 7 步 Pipeline
+## 8 步 Pipeline
 
 ```
-Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA
+Init → Brief → Title/Cover → Script Beats → Storyboard → Styleframes → Web Motion Composition → Render QA
 ```
 
 | 步骤 | 命令 | 产出 | 人工确认 |
 |------|------|------|---------|
-| 1. Brief | `/mc-brief` | 视频任务定义 | |
-| 2. Title/Cover | `/mc-title-cover` | 点击理由与承诺 | ✅ Checkpoint 1 |
-| 3. Script Beats | `/mc-script` | 叙事节奏点 | |
-| 4. Storyboard | `/mc-storyboard` | 可执行场景 | ✅ Checkpoint 2 |
-| 5. Styleframes | `/mc-styleframes` | 静态关键帧 | |
-| 6. Composition | `/mc-compose` | Web 动画工程 | |
-| 7. Render QA | `/mc-render-qa` | QA 报告 + 导出 | ✅ Checkpoint 3 |
+| 0. Init | `/init` | 项目初始化 + 模板选择 | ✅ Checkpoint 0 |
+| 1. Brief | `/brief` | 视频任务定义 | |
+| 2. Title/Cover | `/title-cover` | 点击理由与承诺 | ✅ Checkpoint 1 |
+| 3. Script Beats | `/script` | 叙事节奏点 | |
+| 4. Storyboard | `/storyboard` | 可执行场景 | ✅ Checkpoint 2 |
+| 5. Styleframes | `/styleframes` | 静态关键帧 | |
+| 6. Composition | `/compose` | Web 动画工程 | |
+| 7. Render QA | `/render-qa` | QA 报告 + 导出 | ✅ Checkpoint 3 |
 
 ## 快速开始
 
@@ -41,25 +42,26 @@ Plugins → Add Marketplace → ZeroZ-lab/motioncraft-skills
 从一条模糊的想法开始：
 
 ```
-/mc-brief
+/init
 ```
 
-回答几个问题后，系统会生成结构化的 brief。然后按顺序走完 pipeline：
+选择项目名和模板后，运行 `/brief` 定义视频内容。然后按顺序走完 pipeline：
 
 ```
-/mc-title-cover    → 确认标题和封面
-/mc-script         → 拆解叙事节奏
-/mc-storyboard     → 设计每一幕场景，确认分镜
-/mc-styleframes    → 设计静态画面
-/mc-compose        → 生成 GSAP + HTML 动画工程
-/mc-render-qa      → 渲染、质检、导出
+/brief            → 定义视频任务
+/title-cover      → 确认标题和封面
+/script           → 拆解叙事节奏
+/storyboard       → 设计每一幕场景，确认分镜
+/styleframes      → 设计静态画面
+/compose          → 生成 GSAP + HTML 动画工程
+/render-qa        → 渲染、质检、导出
 ```
 
-3 个 Checkpoint 需要你确认后才继续。
+4 个 Checkpoint 需要你确认后才继续。
 
 ## 示例项目
 
-`docs/video/motioncraft-intro/` 包含一个完整的 60s 介绍视频示例，覆盖全部 7 步 pipeline，包含 HyperFrames 渲染集成。
+`docs/video/motioncraft-intro/` 包含一个完整的 60s 介绍视频示例，覆盖全部 8 步 pipeline，包含 HyperFrames 渲染集成。
 
 ## 产出物
 
@@ -73,6 +75,7 @@ docs/video/<name>/
 └── 06-qa-report.md
 
 project/
+├── .mc-project.json
 ├── index.html
 ├── styles.css
 ├── motion.js
@@ -85,7 +88,7 @@ output/
 └── storyboard.json
 ```
 
-## 7 条宪法
+## 8 条宪法
 
 所有技能继承以下不可变规则（[CANON.md](CANON.md)）：
 
@@ -118,10 +121,11 @@ output/
 | GSAP | 3.12+ | CDN 加载或本地引入 |
 | HyperFrames CLI | 0.4+ | `npx hyperframes doctor` 检查 |
 
-## 6 个审查角色
+## 7 个审查角色
 
 | 角色 | 审查阶段 | 职责 |
 |------|---------|------|
+| project-initializer | Init | 项目名推断 + 模板推荐 |
 | brief-auditor | Brief | 商业价值 + 受众精准度 + 可行性 |
 | title-cover-scout | Title/Cover | 点击理由 + 承诺一致性 + 认知张力 |
 | storyboard-reviewer | Storyboard | 节奏 + 信息密度 + 视觉可行性 |
@@ -136,7 +140,8 @@ motioncraft-skills/
 ├── CANON.md                    # 宪法（8 条）
 ├── AGENTS.md                   # 入口配置
 ├── CLAUDE.md                   # Claude 侧指针
-├── skills/                     # 7 核心技能
+├── skills/                     # 8 核心技能
+│   ├── define-project/
 │   ├── define-brief/
 │   ├── design-title-cover/
 │   ├── design-script-beats/
@@ -144,8 +149,8 @@ motioncraft-skills/
 │   ├── design-styleframes/
 │   ├── build-web-motion/
 │   └── verify-render-qa/
-├── commands/                   # 7 斜杠命令
-├── agents/                     # 6 审查角色
+├── commands/                   # 8 斜杠命令
+├── agents/                     # 7 审查角色
 └── references/                 # 动效原则 + 模式库
 ```
 

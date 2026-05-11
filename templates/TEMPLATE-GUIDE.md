@@ -1,6 +1,6 @@
 # TEMPLATE-GUIDE — 模板选择指引
 
-> MotionCraft 提供 4 个 starter 模板。选择模板是 /mc-compose Phase 0 的人工确认步骤。
+> MotionCraft 提供 4 个 starter 模板。选择模板是 `/init` Checkpoint 0 的人工确认步骤。
 
 ## 模板选择决策表
 
@@ -22,9 +22,9 @@
 | bold, editorial, opinion, contrast | 观点, 评测, 评论, editorial | bold-editorial |
 | data, chart, graph, statistics | 统计, 报告, 金融, 数据 | data-visualization |
 
-**无明确信号时**：默认推荐 dark-tech（覆盖最广）。
+**低置信度场景**（仅 topic 信号或无信号）：平等展示 4 个模板对比 + 简明适用场景，由人类选择。不默认推荐任何模板。
 
-**人类 override**：Agent 推荐仅供参考，用户可 override 选择任何模板或创建自定义模板。
+**人类 override**：Agent 推荐仅供参考，用户可 override 选择任何白名单内模板。⚠ /init 的 Checkpoint 0 是不可逆决策，确认后更改需删除 project/ 重做。
 
 ## 自定义模板最低要求
 

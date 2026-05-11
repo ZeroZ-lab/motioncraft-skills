@@ -2,7 +2,7 @@
 description: 场景设计 — 把脚本变成可执行场景
 ---
 
-# Command: /mc-storyboard
+# Command: /storyboard
 
 ## Goal
 
@@ -36,7 +36,7 @@ Transform script beats into executable scenes with timing and motion intent.
 - [ ] 用户已批准 storyboard
 
 ## Next Steps
-- If approved → /mc-styleframes
+- If approved → /styleframes
 
 ## 实现
 

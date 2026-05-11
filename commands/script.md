@@ -2,7 +2,7 @@
 description: 叙事节奏设计 — 拆解脚本节奏点
 ---
 
-# Command: /mc-script
+# Command: /script
 
 ## Goal
 
@@ -28,7 +28,7 @@ Break the video promise into narrative beats with timing.
 - [ ] beats 时长分配匹配 brief
 
 ## Next Steps
-- If complete → /mc-storyboard
+- If complete → /storyboard
 
 ## 实现
 

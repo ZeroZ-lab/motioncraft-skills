@@ -2,7 +2,7 @@
 description: 渲染质检 — 预览、渲染、检查、修复、导出
 ---
 
-# Command: /mc-render-qa
+# Command: /render-qa
 
 ## Goal
 

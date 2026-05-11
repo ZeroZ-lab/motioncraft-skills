@@ -2,7 +2,7 @@
 description: 静态关键帧设计 — 每一幕的静态画面
 ---
 
-# Command: /mc-styleframes
+# Command: /styleframes
 
 ## Goal
 
@@ -33,7 +33,7 @@ Design static keyframes for every scene before animation.
 - [ ] styleframe-reviewer 已审查
 
 ## Next Steps
-- If complete → /mc-compose
+- If complete → /compose
 
 ## 实现
 
